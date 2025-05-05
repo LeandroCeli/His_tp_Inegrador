@@ -1,0 +1,18 @@
+extends layouts/layout
+
+block content
+  div(class="text-center mt-10")
+    h1(class="text-4xl font-bold text-blue-700") Bienvenido al Sistema HIS
+    p(class="mt-2 text-gray-600 text-lg") Sistema de Gestión de Internaciones Hospitalarias
+
+  if !user
+    div(class="mt-6 flex justify-center gap-4")
+      a(href="/login" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700") Iniciar sesión
+      a(href="/register" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700") Registrarse
+  else
+    div(class="mt-8 text-center")
+      h2(class="text-xl text-gray-700 mb-4") ¡Hola, #{user.nombre}!
+      a(
+        href=`/${user.rol}/dashboard`
+        class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+      ) Ir a mi panel de trabajo

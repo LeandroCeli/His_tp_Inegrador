@@ -1,0 +1,16 @@
+header(class="bg-white shadow")
+  div(class="container mx-auto px-4 py-4 flex justify-between items-center")
+    h1(class="text-2xl font-bold text-blue-700") HIS - Internación
+
+    nav
+      ul(class="flex space-x-4 items-center")
+
+        li: a(href="/" class="text-gray-700 hover:text-blue-600") Inicio
+
+        if !user
+          li: a(href="/login" class="text-gray-700 hover:text-blue-600") Iniciar sesión
+          li: a(href="/register" class="text-gray-700 hover:text-blue-600") Registrarse
+        else
+          li: span(class="text-sm text-gray-600") Bienvenido, #{user.nombre}
+          li: a(href="/logout" class="text-red-600 hover:underline") Cerrar sesión
+//a(href=(user ? `/${user.rol}/dashboard` : "/") class="text-2xl font-bold text-blue-700") HIS - Internación
