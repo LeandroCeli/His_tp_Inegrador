@@ -1,0 +1,19 @@
+extends ../layouts/layout
+
+block content
+
+h2(class="text-2xl font-bold mb-6 text-center text-gray-800") Iniciar Sesión
+
+  if error
+    div(class="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm") #{error}
+
+  form(action="/login" method="POST" class="max-w-md mx-auto bg-white p-6 rounded shadow space-y-4")
+    div
+      label(for="email" class="block text-sm font-medium text-gray-700") Email
+      input(type="email" name="email" id="email" required class="mt-1 block w-full border p-2 rounded")
+
+    div
+      label(for="password" class="block text-sm font-medium text-gray-700") Contraseña
+      input(type="password" name="password" id="password" required class="mt-1 block w-full border p-2 rounded")
+
+    button(type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700") Iniciar sesióna

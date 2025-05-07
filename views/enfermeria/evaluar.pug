@@ -1,0 +1,30 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Evaluación de Enfermería
+
+  form(action="/enfermeria/evaluar" method="POST" class="bg-white p-6 rounded shadow max-w-xl space-y-4")
+    div
+      label(for="paciente" class="block text-sm font-medium text-gray-700") Seleccionar paciente
+      select(name="paciente" id="paciente" required class="mt-1 block w-full border p-2 rounded")
+        option(value="") -- Seleccione --
+        option(value="1") Ana Gómez
+        option(value="2") Pedro Ruiz
+
+    div
+      label(for="signos" class="block text-sm font-medium text-gray-700") Signos vitales
+      textarea(name="signos" id="signos" rows="3" required class="mt-1 block w-full border p-2 rounded")
+
+    div
+      label(for="antecedentes" class="block text-sm font-medium text-gray-700") Antecedentes personales y familiares
+      textarea(name="antecedentes" id="antecedentes" rows="3" class="mt-1 block w-full border p-2 rounded")
+
+    div
+      label(for="motivo" class="block text-sm font-medium text-gray-700") Motivo de ingreso
+      textarea(name="motivo" id="motivo" rows="2" class="mt-1 block w-full border p-2 rounded")
+
+    div
+      label(for="cuidados" class="block text-sm font-medium text-gray-700") Plan de cuidados
+      textarea(name="cuidados" id="cuidados" rows="3" class="mt-1 block w-full border p-2 rounded")
+
+    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Registrar evaluación

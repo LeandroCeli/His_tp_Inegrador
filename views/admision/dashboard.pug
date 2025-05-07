@@ -1,0 +1,27 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Panel de Admisión
+
+  div(class="grid grid-cols-1 md:grid-cols-3 gap-6")
+    div(class="bg-white p-6 rounded shadow text-center")
+      h3(class="text-lg font-semibold text-gray-700") Pacientes registrados
+      p(class="text-3xl font-bold text-blue-600 mt-2") 45
+      a(href="/admision/pacientes" class="text-sm text-blue-500 hover:underline block mt-2") Ver pacientes
+
+    div(class="bg-white p-6 rounded shadow text-center")
+      h3(class="text-lg font-semibold text-gray-700") Camas disponibles
+      p(class="text-3xl font-bold text-green-500 mt-2") 8
+      a(href="/admision/camas" class="text-sm text-blue-500 hover:underline block mt-2") Ver camas
+
+    div(class="bg-white p-6 rounded shadow text-center")
+      h3(class="text-lg font-semibold text-gray-700") Internaciones activas
+      p(class="text-3xl font-bold text-yellow-500 mt-2") 12
+      a(href="/admision/internaciones" class="text-sm text-blue-500 hover:underline block mt-2") Ver detalles
+
+  div(class="mt-10")
+    h3(class="text-xl font-semibold mb-4") Accesos rápidos
+
+    div(class="flex gap-4 flex-wrap")
+      a(href="/admision/pacientes/nuevo" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700") ➕ Nuevo Paciente
+      a(href="/admision/admitir" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") 🏥 Nueva Admisión

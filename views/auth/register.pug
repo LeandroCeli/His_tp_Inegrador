@@ -1,0 +1,28 @@
+extends ../layouts/layout
+
+block content
+
+extends ../layouts/layout
+
+block content
+  div(class="max-w-md mx-auto bg-white p-8 rounded shadow")
+    h2(class="text-2xl font-bold mb-6 text-center") Crear Cuenta
+
+    form(action="/register" method="POST" class="space-y-4")
+      div
+        label(for="nombre" class="block text-sm font-medium text-gray-700") Nombre completo
+        input(type="text" name="nombre" id="nombre" required class="mt-1 block w-full border p-2 rounded")
+
+      div
+        label(for="email" class="block text-sm font-medium text-gray-700") Email
+        input(type="email" name="email" id="email" required class="mt-1 block w-full border p-2 rounded")
+
+      div
+        label(for="password" class="block text-sm font-medium text-gray-700") Contraseña
+        input(type="password" name="password" id="password" required class="mt-1 block w-full border p-2 rounded")
+
+      button(type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700") Registrarme
+
+    p(class="text-center mt-4 text-sm text-gray-600")
+      | ¿Ya tenés cuenta?
+      a(href="/login" class="text-blue-600 hover:underline") Iniciar sesión
