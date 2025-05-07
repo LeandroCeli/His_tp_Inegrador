@@ -1,0 +1,29 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Crear Nuevo Usuario
+
+  form(action="/admin/usuarios" method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4")
+    div
+      label(for="nombre" class="block text-sm font-medium text-gray-700") Nombre completo
+      input(type="text" name="nombre" id="nombre" required class="mt-1 block w-full border p-2 rounded")
+
+    div
+      label(for="email" class="block text-sm font-medium text-gray-700") Email
+      input(type="email" name="email" id="email" required class="mt-1 block w-full border p-2 rounded")
+
+    div
+      label(for="password" class="block text-sm font-medium text-gray-700") Contraseña
+      input(type="password" name="password" id="password" required class="mt-1 block w-full border p-2 rounded")
+
+    div
+      label(for="rol" class="block text-sm font-medium text-gray-700") Rol
+      select(name="rol" id="rol" required class="mt-1 block w-full border p-2 rounded")
+        option(value="") -- Seleccione --
+        option(value="admin") Administrador
+        option(value="admisión") Admisión
+        option(value="medico") Médico
+        option(value="enfermeria") Enfermería
+        option(value="auditor") Auditor
+
+    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario

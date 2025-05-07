@@ -1,0 +1,22 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Gestión de Usuarios
+
+  a(href="/admin/usuarios/nuevo" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4 inline-block") ➕ Nuevo Usuario
+
+  table(class="w-full bg-white shadow-md rounded mt-4")
+    thead
+      tr(class="bg-gray-200 text-gray-700")
+        th(class="py-2 px-4") Nombre
+        th(class="py-2 px-4") Email
+        th(class="py-2 px-4") Rol
+        th(class="py-2 px-4 text-center") Acciones
+    tbody
+      tr
+        td(class="py-2 px-4") Juan Pérez
+        td(class="py-2 px-4") juan@his.com
+        td(class="py-2 px-4") administrador
+        td(class="py-2 px-4 text-center")
+          a(href="#" class="text-blue-600 hover:underline mr-2") Editar
+          a(href="#" class="text-red-600 hover:underline") Eliminar

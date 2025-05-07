@@ -4,11 +4,26 @@ const PORT = 3000;
 const app = express();
 
 
-app.get('/',(req,res)=> 
-{
-    const data = pug.renderFile('./views/index.pug')  
-  res.send(data);
-})
+
+//cONFIGURANDO MOTOR DE PLANTILLAS
+app.set('view engine', 'pug');
+app.set('views', './views');
+
+// PRINCIPAL
+app.get('/', (req, res) => { res.render('index'); });
+
+
+// LOGIN
+
+//ADMIN
+app.get('/admin/dashboard',(req, res) => { res.render('admin/dashboard');});
+app.get('/admin/usuarios',(req, res) => res.render('admin/usuarios'));
+app.get('/admin/nuevoUsuario', (req, res) => res.render('admin/nuevoUsuario'));
+
+
+// ADMISION
+
+
 
 // ================== INICIAR SERVIDOR ==================
 app.listen(PORT, () => {

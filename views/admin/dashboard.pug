@@ -1,0 +1,32 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Panel del Administrador
+
+  div(class="grid grid-cols-1 md:grid-cols-3 gap-6")
+    // Total de usuarios
+    div(class="bg-white p-6 rounded shadow text-center")
+      h3(class="text-lg font-semibold text-gray-700") Usuarios registrados
+      p(class="text-3xl font-bold text-blue-600 mt-2") 12
+      a(href="/admin/usuarios" class="text-sm text-blue-500 hover:underline block mt-2") Ver usuarios
+
+    // Configuración del sistema
+    div(class="bg-white p-6 rounded shadow text-center")
+      h3(class="text-lg font-semibold text-gray-700") Configuraciones
+      p(class="text-3xl font-bold text-green-500 mt-2") 4 módulos
+      a(href="#config" class="text-sm text-blue-500 hover:underline block mt-2") Ver ajustes
+
+    // Seguridad / roles
+    div(class="bg-white p-6 rounded shadow text-center")
+      h3(class="text-lg font-semibold text-gray-700") Roles y permisos
+      p(class="text-3xl font-bold text-purple-500 mt-2") 5 roles
+      a(href="#" class="text-sm text-blue-500 hover:underline block mt-2") Ver estructura
+
+  //- Accesos rápidos
+  div(class="mt-10")
+    h3(class="text-xl font-semibold mb-4") Accesos rápidos
+
+    div(class="flex gap-4 flex-wrap")
+      a(href="/admin/usuarios" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") 👥 Gestionar Usuarios
+      a(href="/admin/usuarios/nuevo" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700") ➕ Crear Usuario
+      a(href="#config" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700") ⚙️ Ajustes del Sistema

@@ -1,0 +1,27 @@
+[
+    {
+      "email": "admin@his.com",
+      "password": "admin123",
+      "nombre": "Administrador Leandro" ,
+      "rol": "admin"
+    },
+    {
+      "email": "enfermeria@his.com",
+      "password": "enfermera123",
+      "nombre": "Lic. Romero",
+      "rol": "enfermeria"
+    },
+    {
+      "email": "medico@his.com",
+      "password": "medico123",
+      "nombre": "Dr. Pérez",
+      "rol": "medico"
+    },
+    {
+      "email": "admision@his.com",
+      "password": "admision123",
+      "nombre": "Sra. López",
+      "rol": "admision"
+    }
+  ]
+  
