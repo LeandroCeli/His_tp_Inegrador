@@ -5,6 +5,8 @@ const app = express();
 const session = require('express-session');
 const fs = require('fs');
 
+// Leer pacientes desde archivo JSON
+const pacientes = JSON.parse(fs.readFileSync('./data/pacientes.json', 'utf-8'));
 
 
 //CONFIGURANDO MOTOR DE PLANTILLAS
@@ -79,6 +81,11 @@ app.get('/logout', (req, res) => {
 app.get('/admin/dashboard', requireLogin, (req, res) => { res.render('admin/dashboard'); });
 app.get('/admin/usuarios', (req, res) => res.render('admin/usuarios'));
 app.get('/admin/nuevoUsuario', (req, res) => res.render('admin/nuevoUsuario'));
+app.get('/admin/areaInternaciones', (req, res) => res.render('admin/areaInternaciones'));
+app.get('/admin/nuevaHabitacion', (req, res) => res.render('admin/nuevaHabitacion'));
+
+app.use('/js', express.static('public/js'));
+
 
 // ADMISION
 app.get('/admision/dashboard', requireLogin, (req, res) => { res.render('admision/dashboard'); });
@@ -86,6 +93,7 @@ app.get('/admision/nuevoPaciente', requireLogin, (req, res) => res.render('admis
 app.get('/admision/admision', requireLogin, (req, res) => res.render('admision/admision'));
 app.get('/admision/internaciones', requireLogin, (req, res) => res.render('admision/internaciones'));
 app.get('/admision/pacientes', requireLogin, (req, res) => res.render('admision/pacientes'));
+
 
 //ENFERMERIA
 app.get('/enfermeria/dashboard', requireLogin, (req, res) => res.render('enfermeria/dashboard'));

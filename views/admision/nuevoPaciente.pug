@@ -1,0 +1,50 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Registrar nuevo paciente
+
+  form(action="/admision/pacientes" method="POST" class="bg-white p-6 rounded shadow max-w-2xl space-y-4")
+
+    div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+      // Datos personales
+      div
+        label(for="nombre" class="block text-sm font-medium text-gray-700") Nombre completo
+        input(type="text" name="nombre" id="nombre" required class="mt-1 block w-full border p-2 rounded")
+
+      div
+        label(for="documento" class="block text-sm font-medium text-gray-700") Documento
+        input(type="text" name="documento" id="documento" required class="mt-1 block w-full border p-2 rounded")
+
+      div
+        label(for="fecha_nac" class="block text-sm font-medium text-gray-700") Fecha de nacimiento
+        input(type="date" name="fecha_nac" id="fecha_nac" required class="mt-1 block w-full border p-2 rounded")
+
+      div
+        label(for="sexo" class="block text-sm font-medium text-gray-700") Sexo
+        select(name="sexo" id="sexo" required class="mt-1 block w-full border p-2 rounded")
+          option(value="") -- Seleccione --
+          option(value="M") Masculino
+          option(value="F") Femenino
+          option(value="X") Otro
+
+      // Vía de ingreso
+      div(class="md:col-span-2")
+        label(for="via_ingreso" class="block text-sm font-medium text-gray-700") Vía de ingreso
+        select(name="via_ingreso" id="via_ingreso" required class="mt-1 block w-full border p-2 rounded")
+          option(value="") -- Seleccione vía de ingreso --
+          option(value="programada") 🗓️ Cita programada (quirúrgica)
+          option(value="derivacion_medica") 🧾 Derivación médica externa
+          option(value="guardia") 🩺 Derivación desde guardia
+          option(value="emergencia") 🚨 Emergencia espontánea
+          option(value="traslado_hospitalario") 🚑 Traslado desde otro hospital
+          option(value="evaluacion_diagnostica") 🔬 Evaluación diagnóstica
+          option(value="internacion_social") 📄 Internación por razones sociales o judiciales
+          option(value="reeingreso") ♻️ Reinternación reciente
+
+      // Observaciones
+      div(class="md:col-span-2")
+        label(for="observaciones" class="block text-sm font-medium text-gray-700") Observaciones adicionales
+        textarea(name="observaciones" id="observaciones" rows="3" class="mt-1 block w-full border p-2 rounded")
+
+    // Botón
+    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Registrar paciente

@@ -1,0 +1,24 @@
+
+h2(class="text-2xl font-bold mb-6 text-gray-800") Crear Nueva Habitación
+
+form(action="/admin/habitaciones" method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4")
+  div
+    label(for="numero" class="block text-sm font-medium text-gray-700") Número de Habitación
+    input(type="text" name="numero" id="numero" required class="mt-1 block w-full border p-2 rounded")
+
+  div
+    label(for="tipo" class="block text-sm font-medium text-gray-700") Tipo de Habitación
+    select(name="tipo" id="tipo" required class="mt-1 block w-full border p-2 rounded")
+      option(value="") -- Seleccione --
+      option(value="simple") Simple
+      option(value="doble") Doble
+      option(value="emergencia") Área de Emergencia
+
+  div
+    label(for="estado" class="block text-sm font-medium text-gray-700") Estado
+    select(name="estado" id="estado" required class="mt-1 block w-full border p-2 rounded")
+      option(value="disponible") Disponible
+      option(value="ocupada") Ocupada
+      option(value="mantenimiento") En Mantenimiento
+
+  button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear  Habitación

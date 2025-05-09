@@ -1,32 +1,41 @@
 extends ../layouts/layout
 
 block content
-  h2(class="text-2xl font-bold mb-6 text-gray-800") Panel del Administrador
+  //- Bloque fijo: estadísticas
+  div(class="bg-white text-black p-4 fixed top-16 left-0 right-0 shadow-md z-50")
+    h2(class="text-2xl font-bold mb-2") Panel del Administrador
+    div(class="grid grid-cols-1 md:grid-cols-3 gap-4")
+      // Total de usuarios
+      div(class="bg-white p-4 rounded shadow text-center")
+        h3(class="text-lg font-semibold text-gray-700") Usuarios registrados
+        p(class="text-3xl font-bold text-blue-600 mt-2") 12
+        a(href="/admin/usuarios" data-url="/admin/usuarios" class="text-sm text-blue-500 hover:underline block mt-2 cargar-en-dinamico") Ver usuarios
+ 
 
-  div(class="grid grid-cols-1 md:grid-cols-3 gap-6")
-    // Total de usuarios
-    div(class="bg-white p-6 rounded shadow text-center")
-      h3(class="text-lg font-semibold text-gray-700") Usuarios registrados
-      p(class="text-3xl font-bold text-blue-600 mt-2") 12
-      a(href="/admin/usuarios" class="text-sm text-blue-500 hover:underline block mt-2") Ver usuarios
+      // Configuración del sistema
+      div(class="bg-white p-4 rounded shadow text-center")
+        h3(class="text-lg font-semibold text-gray-700") Configuraciones
+        p(class="text-3xl font-bold text-green-500 mt-2") 4 módulos
+        a(href="#config" class="text-sm text-blue-500 hover:underline block mt-2") Ver ajustes
 
-    // Configuración del sistema
-    div(class="bg-white p-6 rounded shadow text-center")
-      h3(class="text-lg font-semibold text-gray-700") Configuraciones
-      p(class="text-3xl font-bold text-green-500 mt-2") 4 módulos
-      a(href="#config" class="text-sm text-blue-500 hover:underline block mt-2") Ver ajustes
+      // Seguridad / roles
+      div(class="bg-white p-4 rounded shadow text-center")
+        h3(class="text-lg font-semibold text-gray-700") Roles y permisos
+        p(class="text-3xl font-bold text-purple-500 mt-2") 5 roles
+        a(href="#" class="text-sm text-blue-500 hover:underline block mt-2") Ver estructura
 
-    // Seguridad / roles
-    div(class="bg-white p-6 rounded shadow text-center")
-      h3(class="text-lg font-semibold text-gray-700") Roles y permisos
-      p(class="text-3xl font-bold text-purple-500 mt-2") 5 roles
-      a(href="#" class="text-sm text-blue-500 hover:underline block mt-2") Ver estructura
+  //- Área dinámica: accesos rápidos
+  div(class="mt-60 p-4") 
+    select(id="menu" class="bg-gray-200 text-gray-700 px-4 py-2 rounded")
+      option(value="default") *Opciones*
+      option(value="/admin/areaInternaciones") 📏 Área de Internaciones
+      option(value="/admin/usuarios") 👥 Gestionar Usuarios
+      option(value="/admin/nuevoUsuario") ➕ Crear Usuario
+      option(value="/admin/ajustes") ⚙️ Ajustes del Sistema
 
-  //- Accesos rápidos
-  div(class="mt-10")
-    h3(class="text-xl font-semibold mb-4") Accesos rápidos
+    div(id="contenido" class="mt-4 bg-white p-6 rounded shadow")
+      h3(class="text-xl font-semibold text-gray-800") Bienvenido
+      p(class="text-gray-600 mt-2") Seleccione una opción del menú para cargar el contenido.
 
-    div(class="flex gap-4 flex-wrap")
-      a(href="/admin/usuarios" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") 👥 Gestionar Usuarios
-      a(href="/admin/nuevoUsuario" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700") ➕ Crear Usuario
-      a(href="#config" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700") ⚙️ Ajustes del Sistema
+  //- Script externo
+  script(src="/js/admin.js")

@@ -1,0 +1,25 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Nueva Admisión
+
+  form(action="/admision/admitir" method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4")
+    div
+      label(for="paciente" class="block text-sm font-medium text-gray-700") Seleccionar paciente
+      select(name="paciente" id="paciente" required class="mt-1 block w-full border p-2 rounded")
+        option(value="") -- Seleccione --
+        option(value="1") Ana Gómez
+        option(value="2") Pedro Ruiz
+
+    div
+      label(for="cama" class="block text-sm font-medium text-gray-700") Seleccionar cama
+      select(name="cama" id="cama" required class="mt-1 block w-full border p-2 rounded")
+        option(value="") -- Seleccione --
+        option(value="101A") 101A
+        option(value="102B") 102B
+
+    div
+      label(for="motivo" class="block text-sm font-medium text-gray-700") Motivo de internación
+      input(type="text" name="motivo" id="motivo" required class="mt-1 block w-full border p-2 rounded")
+
+    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Admitir paciente
