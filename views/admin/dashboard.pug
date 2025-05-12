@@ -12,17 +12,17 @@ block content
         a(href="/admin/usuarios" data-url="/admin/usuarios" class="text-sm text-blue-500 hover:underline block mt-2 cargar-en-dinamico") Ver usuarios
  
 
-      // Configuración del sistema
+      // Habitaciones
       div(class="bg-white p-4 rounded shadow text-center")
-        h3(class="text-lg font-semibold text-gray-700") Configuraciones
-        p(class="text-3xl font-bold text-green-500 mt-2") 4 módulos
-        a(href="#config" class="text-sm text-blue-500 hover:underline block mt-2") Ver ajustes
+        h3(class="text-lg font-semibold text-gray-700") Habitaciones Activas
+        p(class="text-3xl font-bold text-green-500 mt-2") 10
+        a(href="/admin/areaInternaciones" data-url='/admin/areaInternaciones' class="text-sm text-blue-500 hover:underline block mt-2 cargar-en-dinamico") Ver Habitaciones
 
-      // Seguridad / roles
+      // Algo mas 
       div(class="bg-white p-4 rounded shadow text-center")
-        h3(class="text-lg font-semibold text-gray-700") Roles y permisos
-        p(class="text-3xl font-bold text-purple-500 mt-2") 5 roles
-        a(href="#" class="text-sm text-blue-500 hover:underline block mt-2") Ver estructura
+        h3(class="text-lg font-semibold text-gray-700") En Construccion
+        p(class="text-3xl font-bold text-purple-500 mt-2") *******
+        a(href="#" class="text-sm text-blue-500 hover:underline block mt-2") --
 
   //- Área dinámica: accesos rápidos
   div(class="mt-60 p-4") 
@@ -30,7 +30,7 @@ block content
       option(value="default") *Opciones*
       option(value="/admin/areaInternaciones") 📏 Área de Internaciones
       option(value="/admin/usuarios") 👥 Gestionar Usuarios
-      option(value="/admin/nuevoUsuario") ➕ Crear Usuario
+    
       option(value="/admin/ajustes") ⚙️ Ajustes del Sistema
 
     div(id="contenido" class="mt-4 bg-white p-6 rounded shadow")

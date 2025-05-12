@@ -1,0 +1,9 @@
+[
+    {
+      "id": 1,
+      "nombre": "Ana Gómez",
+      "documento": "12345678",
+      "sexo": "F",
+      "fecha_nac": "1990-05-12"
+    }
+  ]

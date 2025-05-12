@@ -1,5 +1,3 @@
-
-
 block content
   h2(class="text-2xl font-bold mb-6 text-gray-800") Crear Nuevo Usuario
 
@@ -26,4 +24,6 @@ block content
         option(value="enfermeria") Enfermería
         option(value="auditor") Auditor
 
-    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario
+    div(class="flex justify-between")
+      button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario
+      a(href="/admin/usuarios" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 cargar-en-dinamico" data-url="/admin/usuarios") Cancelar
