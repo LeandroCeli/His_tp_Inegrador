@@ -4,10 +4,22 @@ block content
   div(class="max-w-md mx-auto bg-white p-8 rounded shadow")
     h2(class="text-2xl font-bold mb-6 text-center") Crear Cuenta
 
+    // Mensajes
+    if error
+      div(class="bg-red-100 text-red-800 p-3 rounded mb-4")
+        | #{error}
+    if success
+      div(class="bg-green-100 text-green-800 p-3 rounded mb-4")
+        | #{success}
+
     form(action="/register" method="POST" class="space-y-4")
       div
-        label(for="nombre" class="block text-sm font-medium text-gray-700") Nombre completo
+        label(for="nombre" class="block text-sm font-medium text-gray-700") Nombre
         input(type="text" name="nombre" id="nombre" required class="mt-1 block w-full border p-2 rounded")
+
+      div
+        label(for="apellido" class="block text-sm font-medium text-gray-700") Apellido
+        input(type="text" name="apellido" id="apellido" required class="mt-1 block w-full border p-2 rounded")
 
       div
         label(for="email" class="block text-sm font-medium text-gray-700") Email
@@ -17,7 +29,15 @@ block content
         label(for="password" class="block text-sm font-medium text-gray-700") Contraseña
         input(type="password" name="password" id="password" required class="mt-1 block w-full border p-2 rounded")
 
-      button(type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700") Registrarme
+      div
+        label(for="rolDeseado" class="block text-sm font-medium text-gray-700") ¿Qué rol solicitás?
+        select(name="rolDeseado" id="rolDeseado" required class="mt-1 block w-full border p-2 rounded")
+          option(value="enfermeria") Enfermería
+          option(value="medico") Médico
+          option(value="admision") Admisión
+          option(value="admin") Administrador
+
+      button(type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700") Enviar solicitud
 
     p(class="text-center mt-4 text-sm text-gray-600")
       | ¿Ya tenés cuenta?

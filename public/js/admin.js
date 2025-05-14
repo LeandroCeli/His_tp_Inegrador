@@ -10,14 +10,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Cargar contenido dinámico desde el enlace 'Ver usuarios'
   document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('cargar-en-dinamico')) {
-      e.preventDefault(); // Evitar el cambio de página completo
-      const url = e.target.getAttribute('data-url');
+  if (e.target.classList.contains('cargar-en-dinamico')) {
+    e.preventDefault();
+
+    // ✅ Toma href o data-url, lo que esté presente
+    const url = e.target.getAttribute('data-url') || e.target.getAttribute('href');
+    
+    if (url) {
       cargarContenido(url);
+    } else {
+      console.warn('⚠️ No se encontró URL en el enlace.');
     }
-  });
+  }
+});
+
 
   // Función para cargar contenido dinámico
   function cargarContenido(url) {

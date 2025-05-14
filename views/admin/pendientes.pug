@@ -1,0 +1,16 @@
+h2 Solicitudes Pendientes
+
+  table(class="w-full border-collapse")
+    thead
+      tr
+        th Nombre
+        th Apellido
+        th Email
+        th Rol 
+    tbody
+      each pendiente in pendientes
+        tr
+          td= pendiente.nombre
+          td= pendiente.apellido
+          td= pendiente.email
+          td= pendiente.rolDeseado

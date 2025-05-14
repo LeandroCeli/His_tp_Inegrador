@@ -1,19 +1,19 @@
 h2(class="text-2xl font-bold mb-6 text-gray-800") Gestión de Usuarios
 
 
-a(href="/admin/nuevoUsuario" data-url="/admin/nuevoUsuario" class="text-sm text-blue-500 hover:underline block mt-2 cargar-en-dinamico") ➕ Nuevo Usuario
-table(class="w-full bg-white shadow-md rounded mt-4")
-  thead
-    tr(class="bg-gray-200 text-gray-700")
-      th(class="py-2 px-4") Nombre
-      th(class="py-2 px-4") Email
-      th(class="py-2 px-4") Rol
-      th(class="py-2 px-4 text-center") Acciones
-  tbody
-    tr
-      td(class="py-2 px-4") Juan Pérez
-      td(class="py-2 px-4") juan@his.com
-      td(class="py-2 px-4") Administrador
-      td(class="py-2 px-4 text-center")
-        a(href="#" class="text-blue-600 hover:underline mr-2") Editar
-        a(href="#" class="text-red-600 hover:underline") Eliminar
+table(class="w-full border-collapse")
+    thead
+      tr
+        th Nombre
+        th Apellido
+        th Email
+        th Rol
+        th Activo
+    tbody
+      each usuario in usuarios
+        tr
+          td= usuario.nombre
+          td= usuario.apellido
+          td= usuario.email
+          td= usuario.rol
+          td= usuario.activo ? 'Sí' : 'No'
