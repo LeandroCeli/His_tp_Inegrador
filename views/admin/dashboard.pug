@@ -17,7 +17,7 @@ block content
       // Habitaciones activas
       div(class="bg-white p-4 rounded shadow text-center")
         h3(class="text-lg font-semibold text-gray-700") Habitaciones activas
-        p(class="text-3xl font-bold text-green-500 mt-2") 10
+        p(class="text-3xl font-bold text-green-500 mt-2")= habitaciones
         a(href="/admin/areaInternaciones" class="text-sm text-blue-500 hover:underline block mt-2 cargar-en-dinamico") Ver habitaciones
         
       // Usuarios pendientes
@@ -41,3 +41,4 @@ block content
 
   //- Script para navegación dinámica (si usás JavaScript)
   script(src="/js/admin.js")
+

@@ -1,29 +1,44 @@
+extends ../layouts/layout
+
+
 block content
-  h2(class="text-2xl font-bold mb-6 text-gray-800") Crear Nuevo Usuario
+  h2(class="text-2xl font-bold mb-4") Crear nuevo usuario
 
-  form(action="/admin/usuarios" method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4")
+  form(action="/admin/nuevoUsuario" method="POST" class="space-y-4 max-w-md")
     div
-      label(for="nombre" class="block text-sm font-medium text-gray-700") Nombre completo
-      input(type="text" name="nombre" id="nombre" required class="mt-1 block w-full border p-2 rounded")
-
-    div
-      label(for="email" class="block text-sm font-medium text-gray-700") Email
-      input(type="email" name="email" id="email" required class="mt-1 block w-full border p-2 rounded")
+      label(for="nombre") Nombre
+      input(type="text" name="nombre" id="nombre" class="w-full border p-2 rounded" value=nombre)
+      if errores && errores.nombre
+        p.text-red-600.text-sm #{errores.nombre}
 
     div
-      label(for="password" class="block text-sm font-medium text-gray-700") Contraseña
-      input(type="password" name="password" id="password" required class="mt-1 block w-full border p-2 rounded")
+      label(for="apellido") Apellido
+      input(type="text" name="apellido" id="apellido" class="w-full border p-2 rounded" value=apellido)
+      if errores && errores.apellido
+        p.text-red-600.text-sm #{errores.apellido}
 
     div
-      label(for="rol" class="block text-sm font-medium text-gray-700") Rol
-      select(name="rol" id="rol" required class="mt-1 block w-full border p-2 rounded")
-        option(value="") -- Seleccione --
-        option(value="admin") Administrador
-        option(value="admisión") Admisión
-        option(value="medico") Médico
-        option(value="enfermeria") Enfermería
-        option(value="auditor") Auditor
+      label(for="email") Email
+      input(type="email" name="email" id="email" class="w-full border p-2 rounded" value=email)
+      if errores && errores.email
+        p.text-red-600.text-sm #{errores.email}
 
-    div(class="flex justify-between")
-      button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario
-      a(href="/admin/usuarios" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 cargar-en-dinamico" data-url="/admin/usuarios") Cancelar
+    div
+      label(for="password") Contraseña
+      input(type="password" name="password" id="password" class="w-full border p-2 rounded")
+      if errores && errores.password
+        p.text-red-600.text-sm #{errores.password}
+
+    div
+      label(for="rol") Rol
+      select(name="rol" id="rol" class="w-full border p-2 rounded")
+        option(disabled selected value="") -- Seleccione un rol --
+        option(value="admin" selected=(rol === 'admin')) Administrador
+        option(value="admisión" selected=(rol === 'admisión')) Admisión
+        option(value="enfermeria" selected=(rol === 'enfermeria')) Enfermería
+        option(value="medico" selected=(rol === 'medico')) Médico
+      if errores && errores.rol
+        p.text-red-600.text-sm #{errores.rol}
+
+    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario
+    a(href="/admin/dashboard?cargar=usuarios" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 ml-4 cargar-en-dinamico") Cancelar

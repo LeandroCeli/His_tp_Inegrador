@@ -1,25 +1,48 @@
-h2(class="text-2xl font-bold mb-6 text-gray-800") Crear Nueva Habitación
+extends ../layouts/layout
 
-form(action="/admin/habitaciones" method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4")
-  div
-    label(for="numero" class="block text-sm font-medium text-gray-700") Número de Habitación
-    input(type="text" name="numero" id="numero" required class="mt-1 block w-full border p-2 rounded")
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800") Crear Nueva Habitación
 
-  div
-    label(for="tipo" class="block text-sm font-medium text-gray-700") Tipo de Habitación
-    select(name="tipo" id="tipo" required class="mt-1 block w-full border p-2 rounded")
-      option(value="") -- Seleccione --
-      option(value="simple") Simple
-      option(value="doble") Doble
-      option(value="emergencia") Área de Emergencia
+  if success
+    div(class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4")
+      strong(class="font-bold") ¡Éxito!
+      span(class="block sm:inline")= success
+      if preguntarOtra
+        div(class="mt-2 flex space-x-4")
+          a(href="/admin/habitaciones" class="text-blue-600 hover:underline") Crear otra habitación
+          a(href="/admin/dashboard?cargar=areaInternaciones" class="text-red-600 hover:underline") Salir
 
-  div
-    label(for="estado" class="block text-sm font-medium text-gray-700") Estado
-    select(name="estado" id="estado" required class="mt-1 block w-full border p-2 rounded")
-      option(value="disponible") Disponible
-      option(value="ocupada") Ocupada
-      option(value="mantenimiento") En Mantenimiento
+  if errorGeneral
+    div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4")
+      strong(class="font-bold") ¡Error!
+      span(class="block sm:inline")= errorGeneral
 
-  div(class="flex justify-between")
-    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear Habitación
-    a(href="/admin/areaInternaciones" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 cargar-en-dinamico" data-url="/admin/areaInternaciones") Cancelar
+  form(action="/admin/habitaciones" method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4")
+    - var errores = errores || {};
+    if errores.numero
+      div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2")= errores.numero
+    div
+      label(for="numero" class="block text-sm font-medium text-gray-700") Número de Habitación
+      input(type="text" name="numero" id="numero" required class="mt-1 block w-full border p-2 rounded" value=numero)
+
+    if errores.tipo
+      div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2")= errores.tipo
+    div
+      label(for="tipo" class="block text-sm font-medium text-gray-700") Tipo de Habitación
+      select(name="tipo" id="tipo" required class="mt-1 block w-full border p-2 rounded")
+        option(value="") -- Seleccione --
+        option(value="simple" selected=tipo=="simple") Simple
+        option(value="doble" selected=tipo=="doble") Doble
+        option(value="emergencia" selected=tipo=="emergencia") Área de Emergencia
+
+    if errores.estado
+      div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2")= errores.estado
+    div
+      label(for="estado" class="block text-sm font-medium text-gray-700") Estado
+      select(name="estado" id="estado" required class="mt-1 block w-full border p-2 rounded")
+        option(value="disponible" selected=estado=="disponible") Disponible
+        option(value="mantenimiento" selected=estado=="mantenimiento") En Mantenimiento
+
+    div(class="flex justify-between")
+      button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear Habitación
+      a(href="/admin/dashboard?cargar=areaInternaciones" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400") Cancelar

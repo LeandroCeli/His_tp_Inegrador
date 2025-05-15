@@ -40,3 +40,19 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const cargar = params.get('cargar');
+
+  if (cargar) {
+    fetch(`/admin/${cargar}`)
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('contenido').innerHTML = html;
+      })
+      .catch(() => {
+        document.getElementById('contenido').innerHTML = '<p class="text-red-600">Error al cargar contenido.</p>';
+      });
+  }
+});

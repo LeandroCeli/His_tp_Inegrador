@@ -1,16 +1,24 @@
-h2 Solicitudes Pendientes
+h2(class="text-2xl font-bold mb-6 text-gray-800 text-center") Área de Internaciones
 
-  table(class="w-full border-collapse")
+div(class="overflow-x-auto bg-white p-6 rounded shadow max-w-4xl mx-auto")
+
+  table(class="w-full table-auto border-collapse text-center")
     thead
-      tr
-        th Nombre
-        th Apellido
-        th Email
-        th Rol 
+      tr(class="bg-gray-200 text-gray-700")
+        th(class="py-2 px-4") Nombre
+        th(class="py-2 px-4") Apellido
+        th(class="py-2 px-4") Email
+        th(class="py-2 px-4") Rol
+        th(class="py-2 px-4") Acciones
+
     tbody
       each pendiente in pendientes
-        tr
-          td= pendiente.nombre
-          td= pendiente.apellido
-          td= pendiente.email
-          td= pendiente.rolDeseado
+        tr(class="border-b hover:bg-gray-50")
+          td(class="py-2 px-4")= pendiente.nombre
+          td(class="py-2 px-4 capitalize")= pendiente.apellido
+          td(class="py-2 px-4 capitalize")= pendiente.email
+          td(class="py-2 px-4 capitalize")= pendiente.rolDeseado
+          td(class="py-2 px-4")
+            a(href=`/admin/editarHabitacion/${pendiente.id}` class="text-blue-600 hover:underline mr-2") Permitir
+            a(href=`/admin/eliminarHabitacion/${pendiente.id}` class="text-red-600 hover:underline") Cancelar
+
