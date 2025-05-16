@@ -40,8 +40,8 @@ block content
     div
       label(for="estado" class="block text-sm font-medium text-gray-700") Estado
       select(name="estado" id="estado" required class="mt-1 block w-full border p-2 rounded")
-        option(value="disponible" selected=estado=="disponible") Disponible
-        option(value="mantenimiento" selected=estado=="mantenimiento") En Mantenimiento
+        option(value="disponible" selected=(estado === 'disponible')) Disponible
+        option(value="mantenimiento" selected=(estado === 'mantenimiento')) En Mantenimiento
 
     div(class="flex justify-between")
       button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear Habitación

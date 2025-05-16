@@ -226,10 +226,11 @@ app.get('/admin/areaInternaciones', requireLogin, async (req, res) => {
     const habitaciones = await Habitacion.findAll({ 
       attributes: ['numero', 'tipo', 'estado'] 
     });
-
+     
     // Renderiza la vista y envía los datos de usuarios
     res.render('admin/areaInternaciones', { habitaciones });
-  } catch (err) {
+  } catch (err) 
+  {
     console.error('Error al cargar Habitaciones:', err);
     res.render('admin/areaInternaciones', { habitaciones: [] });
   }
@@ -260,14 +261,16 @@ app.post('/admin/habitaciones', requireLogin, async (req, res) => {
     });
   }
 
-  try {
-    await Habitacion.create({ numero, tipo, estado });
+  try 
+  {console.log('Datos recibidos:', { numero, tipo, estado });
+   await Habitacion.create({ numero: String(numero), tipo, estado });
+   
     res.render('admin/nuevaHabitacion', {
       success: 'Habitación creada exitosamente.',
       preguntarOtra: true
     });
   } catch (err) {
-    console.error(err);
+    console.error('aca' + err);
     res.render('admin/nuevaHabitacion', {
       errorGeneral: 'Error inesperado al guardar la habitación.'
     });
