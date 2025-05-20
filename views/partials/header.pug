@@ -8,7 +8,7 @@ header(class="bg-white shadow")
         li: a(href="/" class="text-gray-700 hover:text-blue-600") Inicio
 
         if !user
-          li: a(href="/login" class="text-gray-700 hover:text-blue-600") Iniciar sesión
+          li: a(href="/auth" class="text-gray-700 hover:text-blue-600") Iniciar sesión
           li: a(href="/register" class="text-gray-700 hover:text-blue-600") Registrarse
         else
           li: span(class="text-sm text-gray-600") Bienvenido, #{user.nombre}

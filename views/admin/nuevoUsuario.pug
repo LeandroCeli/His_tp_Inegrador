@@ -1,44 +1,78 @@
 extends ../layouts/layout
 
-
 block content
-  h2(class="text-2xl font-bold mb-4") Crear nuevo usuario
+  .flex.items-center.justify-center.min-h-screen.bg-gray-100
+    .bg-white.shadow-md.rounded-lg.p-8.w-full.max-w-md
+      h2.text-2xl.font-bold.mb-6.text-center.text-gray-800 Crear nuevo usuario
 
-  form(action="/admin/nuevoUsuario" method="POST" class="space-y-4 max-w-md")
-    div
-      label(for="nombre") Nombre
-      input(type="text" name="nombre" id="nombre" class="w-full border p-2 rounded" value=nombre)
-      if errores && errores.nombre
-        p.text-red-600.text-sm #{errores.nombre}
+      if errorGeneral
+        p.bg-red-100.text-red-700.px-4.py-2.rounded.mb-4.text-center #{errorGeneral}
 
-    div
-      label(for="apellido") Apellido
-      input(type="text" name="apellido" id="apellido" class="w-full border p-2 rounded" value=apellido)
-      if errores && errores.apellido
-        p.text-red-600.text-sm #{errores.apellido}
+      form(action="/usuarios/nuevoUsuario" method="POST" class="space-y-4" id="formNuevoUsuario")
+        div
+          label(for="nombre" class="block text-gray-700") Nombre
+          input(type="text" name="nombre" id="nombre" class="w-full border p-2 rounded" value=nombre)
+          if errores && errores.nombre
+            p.text-red-600.text-sm.mt-1 #{errores.nombre}
 
-    div
-      label(for="email") Email
-      input(type="email" name="email" id="email" class="w-full border p-2 rounded" value=email)
-      if errores && errores.email
-        p.text-red-600.text-sm #{errores.email}
+        div
+          label(for="apellido" class="block text-gray-700") Apellido
+          input(type="text" name="apellido" id="apellido" class="w-full border p-2 rounded" value=apellido)
+          if errores && errores.apellido
+            p.text-red-600.text-sm.mt-1 #{errores.apellido}
 
-    div
-      label(for="password") Contraseña
-      input(type="password" name="password" id="password" class="w-full border p-2 rounded")
-      if errores && errores.password
-        p.text-red-600.text-sm #{errores.password}
+        div
+          label(for="email" class="block text-gray-700") Email
+          input(type="email" name="email" id="email" class="w-full border p-2 rounded" value=email)
+          if errores && errores.email
+            p.text-red-600.text-sm.mt-1 #{errores.email}
 
-    div
-      label(for="rol") Rol
-      select(name="rol" id="rol" class="w-full border p-2 rounded")
-        option(disabled selected value="") -- Seleccione un rol --
-        option(value="admin" selected=(rol === 'admin')) Administrador
-        option(value="admisión" selected=(rol === 'admisión')) Admisión
-        option(value="enfermeria" selected=(rol === 'enfermeria')) Enfermería
-        option(value="medico" selected=(rol === 'medico')) Médico
-      if errores && errores.rol
-        p.text-red-600.text-sm #{errores.rol}
+        div
+          label(for="password" class="block text-gray-700") Contraseña
+          input(type="password" name="password" id="password" class="w-full border p-2 rounded")
+          if errores && errores.password
+            p.text-red-600.text-sm.mt-1 #{errores.password}
 
-    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario
-    a(href="/admin/dashboard?cargar=usuarios" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 ml-4 cargar-en-dinamico") Cancelar
+        div
+          label(for="rol" class="block text-gray-700") Rol
+          select(name="rol" id="rol" class="w-full border p-2 rounded")
+            option(disabled selected value="") -- Seleccione un rol --
+            option(value="admin" selected=(rol === 'admin')) Administrador
+            option(value="admisión" selected=(rol === 'admisión')) Admisión
+            option(value="enfermeria" selected=(rol === 'enfermeria')) Enfermería
+            option(value="medico" selected=(rol === 'medico')) Médico
+          if errores && errores.rol
+            p.text-red-600.text-sm.mt-1 #{errores.rol}
+
+        .flex.justify-between.items-center
+          button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario
+          a(href="/admin/dashboard?cargar=usuarios" class="text-sm text-blue-600 hover:underline cargar-en-dinamico") Cancelar
+
+  //- Modal emergente para éxito y preguntar si desea crear otro usuario
+  if success && preguntarNuevo
+    .fixed.inset-0.bg-black.bg-opacity-50.flex.justify-center.items-center
+      .bg-white.rounded-lg.p-6.shadow-lg.w-96.text-center
+        p.text-lg.font-semibold.mb-4 #{success}
+        p.mb-6 ¿Desea crear otro usuario?
+        .flex.justify-center.space-x-4
+          button#btnNuevoCrear(type="button" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Sí
+          a(href="/admin/dashboard?cargar=usuarios" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400") No (volver)
+
+  script.
+    // Al hacer clic en "Sí" se limpia el formulario y cierra el modal
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnNuevoCrear = document.getElementById('btnNuevoCrear');
+      if (btnNuevoCrear) {
+        btnNuevoCrear.addEventListener('click', () => {
+          // Cierra el modal
+          const modal = btnNuevoCrear.closest('.fixed');
+          if (modal) modal.remove();
+          // Limpia el formulario
+          const form = document.getElementById('formNuevoUsuario');
+          if (form) form.reset();
+          // Enfocar en el primer campo
+          const inputNombre = document.getElementById('nombre');
+          if (inputNombre) inputNombre.focus();
+        });
+      }
+    });

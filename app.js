@@ -1,133 +1,82 @@
+// ================== IMPORTACIONES ==================
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const sequelize = require('./config/sequelize'); // Conexión a la BD
 
-const sequelize = require('./config/sequelize'); // Conexión Sequelize
-const fs = require('fs');
+// Importación de rutas
+const indexRoutes = require('./routes/index');
+const authRoutes = require('./routes/login');
+const registerRoutes = require('./routes/register');
+const adminRoutes = require('./routes/admin');
+const usuarioRoutes = require('./routes/usuario');
+const internacionController =  require('./routes/internaciones');
 
+// Middleware de autenticación
+const requireLogin = require('./middlewares/authMiddleware');
+
+// ================== INICIALIZACIÓN ==================
 const app = express();
 const PORT = 3000;
 
 // ================== CONFIGURACIONES ==================
-
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+// Middleware para manejo de formularios
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/js', express.static('public/js'));
 
+// Archivos estáticos
+app.use('/js', express.static(path.join(__dirname, 'public/js')));
+
+// Sesión
 app.use(session({
     secret: 'claveSecreta123',
     resave: false,
     saveUninitialized: true
 }));
 
+// Middleware para hacer disponible el usuario en todas las vistas
 app.use((req, res, next) => {
-    res.locals.user = req.session.user;
+    res.locals.user = req.session.user || null;
     next();
 });
-
-function requireLogin(req, res, next) {
-    if (!req.session.user) return res.redirect('/login');
-    next();
-}
-
 
 // ================== RUTAS ==================
+app.use('/', indexRoutes);
+app.use('/auth', authRoutes);
+app.use('/login', authRoutes);
+app.use('/register', registerRoutes);
+app.use('/admin', adminRoutes);
+app.use('/admin/usuarios',adminRoutes);
+app.use('/usuarios',usuarioRoutes);
+app.use('/areaInternaciones',internacionController);
 
-// Inicio
-app.get('/', (req, res) => res.render('index'));
-
-// Login
-app.get('/login', (req, res) => res.render('auth/login'));
-
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.render('auth/login', { error: 'Todos los campos son obligatorios.' });
-  }
-
-  const usuarios = JSON.parse(fs.readFileSync('./data/usuarios.json', 'utf-8'));
-  const user = usuarios.find(u => u.email === email && u.password === password);
-
-  if (!user) {
-    return res.render('auth/login', { error: 'Credenciales incorrectas.' });
-  }
-
-  req.session.user = {
-    id: user.id,
-    nombre: user.nombre,
-    rol: user.rol
-  };
-
-  switch (user.rol) {
-    case 'admin': return res.redirect('/admin/dashboard');
-    case 'enfermeria': return res.redirect('/enfermeria/dashboard');
-    case 'medico': return res.redirect('/medico/dashboard');
-    case 'admision': return res.redirect('/admision/dashboard');
-    default: return res.redirect('/');
-  }
-});
-
-app.get('/register', (req, res) => res.render('auth/register'));
-
-
-
-const { SolicitudRegistro, Usuario } = require('./models'); // Asegurate que estén bien importados
-
-app.post('/register', async (req, res) => {
-  const { nombre, apellido, email, password, rolDeseado } = req.body;
-
-  try {
-    // 1. Verifica si el correo ya está registrado como usuario activo
-    const usuarioExistente = await Usuario.findOne({ where: { email } });
-    if (usuarioExistente) {
-      return res.render('auth/register', { error: 'Este correo ya está registrado como usuario.' });
-    }
-
-    // 2. Verifica si ya hay una solicitud con ese email
-    const solicitudExistente = await SolicitudRegistro.findOne({ where: { email } });
-    if (solicitudExistente) {
-      return res.render('auth/register', { error: 'Ya existe una solicitud pendiente con este correo.' });
-    }
-
-    // 3. Si todo está bien, guardar la solicitud
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await SolicitudRegistro.create({
-      nombre,
-      apellido,
-      email,
-      password: hashedPassword,
-      rolDeseado
-    });
-
-    res.render('auth/register', { success: 'Solicitud enviada correctamente. Un administrador la revisará.' });
-
-  } catch (err) {
-    console.error(err);
-    res.render('auth/register', { error: 'Error al procesar la solicitud. Intente más tarde.' });
-  }
-});
-
-
-
-
-
-
-
-
+// Ruta para cerrar sesión
 app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/'));
 });
+
+// ================== INICIAR SERVIDOR ==================
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});
+
+
+/*
+app.get('/logout', (req, res) => {
+    req.session.destroy(() => res.redirect('/'));
+});
+*/ 
 
 // ADMIN
 //app.get('/admin/dashboard', requireLogin, (req, res) => res.render('admin/dashboard'));
 
 //const { SolicitudRegistro, Usuario } = require('./models');
 
+/*
 app.get('/admin/dashboard', requireLogin, async (req, res) => {
   try {
     const totalUsuarios = await Usuario.count();
@@ -164,61 +113,7 @@ app.get('/admin/usuarios', requireLogin, async (req, res) => {
   }
 });
 
-app.get('/admin/nuevoUsuario', requireLogin, (req, res) => res.render('admin/nuevoUsuario'));
-// POST: Procesar nuevo usuario
-app.post('/admin/nuevoUsuario', requireLogin, async (req, res) => {
-  const { nombre, apellido, email, password, rol } = req.body;
 
-  const errores = {};
-
-  // Validaciones
-  if (!nombre) errores.nombre = 'El nombre es obligatorio.';
-  if (!apellido) errores.apellido = 'El apellido es obligatorio.';
-  if (!email) errores.email = 'El correo es obligatorio.';
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errores.email = 'Formato de correo inválido.';
-  if (!password) errores.password = 'La contraseña es obligatoria.';
-  else if (password.length < 6) errores.password = 'Debe tener al menos 6 caracteres.';
-  if (!rol) errores.rol = 'El rol es obligatorio.';
-
-  try {
-    const existente = await Usuario.findOne({ where: { email } });
-    if (existente) errores.email = 'Este correo ya está registrado.';
-  } catch (error) {
-    console.error(error);
-  }
-
-  if (Object.keys(errores).length > 0) {
-    return res.render('admin/nuevoUsuario', {
-      errores,
-      nombre,
-      apellido,
-      email,
-      rol
-    });
-  }
-
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await Usuario.create({
-      nombre,
-      apellido,
-      email,
-      password: hashedPassword,
-      rol,
-      activo: true
-    });
-
-    res.render('admin/nuevoUsuario', {
-      success: 'Usuario creado exitosamente.',
-      preguntarNuevo: true
-    });
-  } catch (err) {
-    console.error('Error al crear usuario:', err);
-    res.render('admin/nuevoUsuario', { errorGeneral: 'Error inesperado al crear el usuario.' });
-  }
-});
-
-//=> res.render('admin/areaInternaciones'));
 
 app.get('/admin/areaInternaciones', requireLogin, async (req, res) => {
   try {
@@ -292,7 +187,7 @@ app.get('/admin/pendientes', requireLogin, async (req, res) => {
 });
 
 
-
+*/
 
 
 // ADMISION
@@ -313,7 +208,3 @@ app.get('/medico/evaluar', requireLogin, (req, res) => res.render('medico/evalua
 app.get('/medico/evaluaciones', requireLogin, (req, res) => res.render('medico/evaluaciones'));
 app.get('/medico/alta', requireLogin, (req, res) => res.render('medico/alta'));
 
-// ================== INICIAR SERVIDOR ==================
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-});
