@@ -1,50 +1,115 @@
 extends ../layouts/layout
 
 block content
-  h2(class="text-2xl font-bold mb-6 text-gray-800") Registrar nuevo paciente
+  h2(class="text-2xl font-bold mb-6 text-gray-800 text-center") Registro de Nuevo Paciente
 
-  form(action="/admision/pacientes" method="POST" class="bg-white p-6 rounded shadow max-w-2xl space-y-4")
-
-    div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
-      // Datos personales
-      div
-        label(for="nombre" class="block text-sm font-medium text-gray-700") Nombre completo
-        input(type="text" name="nombre" id="nombre" required class="mt-1 block w-full border p-2 rounded")
-
-      div
-        label(for="documento" class="block text-sm font-medium text-gray-700") Documento
-        input(type="text" name="documento" id="documento" required class="mt-1 block w-full border p-2 rounded")
-
-      div
-        label(for="fecha_nac" class="block text-sm font-medium text-gray-700") Fecha de nacimiento
-        input(type="date" name="fecha_nac" id="fecha_nac" required class="mt-1 block w-full border p-2 rounded")
+  div(class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow")
+    form(id="patient-form" class="space-y-6")
+      // Personal Information
+      div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+        div
+          label(for="name" class="block text-sm font-medium text-gray-700") Nombre
+          input(id="name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+        div
+          label(for="surname" class="block text-sm font-medium text-gray-700") Apellido
+          input(id="surname" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
 
       div
-        label(for="sexo" class="block text-sm font-medium text-gray-700") Sexo
-        select(name="sexo" id="sexo" required class="mt-1 block w-full border p-2 rounded")
-          option(value="") -- Seleccione --
-          option(value="M") Masculino
-          option(value="F") Femenino
-          option(value="X") Otro
+        label(for="gender" class="block text-sm font-medium text-gray-700") Género
+        select(id="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+          option(value="") Seleccione una opción
+          option(value="masculino") Masculino
+          option(value="femenino") Femenino
+          option(value="otro") Otro
 
-      // Vía de ingreso
-      div(class="md:col-span-2")
-        label(for="via_ingreso" class="block text-sm font-medium text-gray-700") Vía de ingreso
-        select(name="via_ingreso" id="via_ingreso" required class="mt-1 block w-full border p-2 rounded")
-          option(value="") -- Seleccione vía de ingreso --
-          option(value="programada") 🗓️ Cita programada (quirúrgica)
-          option(value="derivacion_medica") 🧾 Derivación médica externa
-          option(value="guardia") 🩺 Derivación desde guardia
-          option(value="emergencia") 🚨 Emergencia espontánea
-          option(value="traslado_hospitalario") 🚑 Traslado desde otro hospital
-          option(value="evaluacion_diagnostica") 🔬 Evaluación diagnóstica
-          option(value="internacion_social") 📄 Internación por razones sociales o judiciales
-          option(value="reeingreso") ♻️ Reinternación reciente
+      div
+        label(for="dob" class="block text-sm font-medium text-gray-700") Fecha de Nacimiento
+        input(id="dob" type="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
 
-      // Observaciones
-      div(class="md:col-span-2")
-        label(for="observaciones" class="block text-sm font-medium text-gray-700") Observaciones adicionales
-        textarea(name="observaciones" id="observaciones" rows="3" class="mt-1 block w-full border p-2 rounded")
+      // Contact Information
+      div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+        div
+          label(for="phone" class="block text-sm font-medium text-gray-700") Teléfono
+          input(id="phone" type="tel" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+        div
+          label(for="emergency-phone" class="block text-sm font-medium text-gray-700") Teléfono de Emergencia
+          input(id="emergency-phone" type="tel" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
 
-    // Botón
-    button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Registrar paciente
+      div
+        label(for="address" class="block text-sm font-medium text-gray-700") Domicilio
+        input(id="address" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+
+      div
+        label(for="nationality" class="block text-sm font-medium text-gray-700") Nacionalidad
+        input(id="nationality" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+
+      // Medical Information
+      div
+        label(for="blood-type" class="block text-sm font-medium text-gray-700") Grupo Sanguíneo
+        select(id="blood-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+          option(value="") Seleccione una opción
+          option(value="A+") A+
+          option(value="A-") A-
+          option(value="B+") B+
+          option(value="B-") B-
+          option(value="AB+") AB+
+          option(value="AB-") AB-
+          option(value="O+") O+
+          option(value="O-") O-
+
+      // Health Insurance
+      div
+        label(for="insurance" class="block text-sm font-medium text-gray-700") Seguro Médico
+        select(id="insurance" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50")
+          option(value="") Ninguno
+          option(value="OSDE") OSDE
+          option(value="Swiss Medical") Swiss Medical
+          option(value="Galeno") Galeno
+          option(value="Medicus") Medicus
+          option(value="Sancor Salud") Sancor Salud
+          option(value="otro") Otro
+
+      div(id="insurance-details" class="hidden")
+        label(for="insurance-name" class="block text-sm font-medium text-gray-700") Nombre del Seguro (si seleccionó "Otro")
+        input(id="insurance-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50")
+        label(for="affiliate-number" class="block text-sm font-medium text-gray-700 mt-4") Número de Afiliado
+        input(id="affiliate-number" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50")
+
+      // Referring Doctor and Observations
+      div
+        label(for="referring-doctor" class="block text-sm font-medium text-gray-700") Médico que Indica la Internación
+        input(id="referring-doctor" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+
+      div
+        label(for="observations" class="block text-sm font-medium text-gray-700") Observaciones Adicionales
+        textarea(id="observations" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" rows="4")
+
+      // Form Buttons
+      div(class="flex justify-end gap-4")
+        a(href="/admision" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
+        button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200") Registrar Paciente
+
+  script.
+    const insuranceSelect = document.getElementById('insurance');
+    const insuranceDetails = document.getElementById('insurance-details');
+    const insuranceName = document.getElementById('insurance-name');
+    const affiliateNumber = document.getElementById('affiliate-number');
+
+    insuranceSelect.addEventListener('change', (e) => {
+      if (e.target.value && e.target.value !== 'ninguno') {
+        insuranceDetails.classList.remove('hidden');
+        insuranceName.required = e.target.value === 'otro';
+        affiliateNumber.required = true;
+      } else {
+        insuranceDetails.classList.add('hidden');
+        insuranceName.required = false;
+        affiliateNumber.required = false;
+      }
+    });
+
+    document.getElementById('patient-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Handle form submission (e.g., send data to server)
+      console.log('Form submitted');
+      // Reset form or redirect as needed
+    });

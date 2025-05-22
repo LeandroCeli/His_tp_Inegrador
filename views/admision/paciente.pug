@@ -1,0 +1,153 @@
+extends ../layouts/layout
+
+block content
+  h2(class="text-2xl font-bold mb-6 text-gray-800 text-center") Admisión de Paciente
+
+  div(class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow")
+    // Patient Name
+    div(class="text-center mb-6")
+      h3(class="text-lg font-semibold text-gray-700") Paciente
+      p(class="text-2xl font-bold text-blue-600 mt-2") #{patientName || 'Nombre del Paciente'}
+
+    // Action Buttons
+    div(class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8")
+      a(href="/admision/pacientes/datos" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Datos del Paciente
+      a(href="/admision/pacientes/mutual" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Mutual
+      a(href="/admision/pacientes/ingresos" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Ingresos
+      a(href="/admision/pacientes/historia" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Historia Clínica
+
+    // Hospital Wing, Room, and Bed Selection
+    div(class="mb-6")
+      h3(class="text-lg font-semibold text-gray-700 mb-4") Asignar Área, Habitación y Cama
+      div(class="grid grid-cols-1 md:grid-cols-3 gap-4")
+        div
+          label(for="hospital-wing" class="block text-sm font-medium text-gray-700") Ala
+          select(id="hospital-wing" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+            option(value="") Seleccione un ala
+            option(value="medicina_interna") Medicina Interna
+            option(value="cirugia") Cirugía
+            option(value="cuidados_intensivos") Cuidados Intensivos
+            option(value="pediatria") Pediatría
+            option(value="maternidad") Maternidad
+        div
+          label(for="room" class="block text-sm font-medium text-gray-700") Habitación
+          select(id="room" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" disabled required)
+            option(value="") Seleccione un ala primero
+        div
+          label(for="bed" class="block text-sm font-medium text-gray-700") Cama
+          select(id="bed" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" disabled required)
+            option(value="") Seleccione una habitación primero
+
+    // Admit Button
+    div(class="flex justify-end gap-4")
+      a(href="/admision" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
+      button(id="admit-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200" disabled) Confirmar Internación
+
+  script.
+    // Mock patient gender (replace with actual data from backend or form)
+    const patientGender = "#{patientGender || 'masculino'}"; // e.g., 'masculino', 'femenino', 'otro'
+
+    // Mock bed data structure (replace with backend API data)
+    const hospitalData = {
+      'medicina_interna': [
+        { room: 'MI-101', beds: [
+          { id: 'MI-101-A', status: 'free', hygienized: true, occupantGender: null },
+          { id: 'MI-101-B', status: 'occupied', hygienized: false, occupantGender: 'femenino' }
+        ]},
+        { room: 'MI-102', beds: [
+          { id: 'MI-102-A', status: 'free', hygienized: true, occupantGender: null }
+        ]}
+      ],
+      'cirugia': [
+        { room: 'CIR-201', beds: [
+          { id: 'CIR-201-A', status: 'free', hygienized: true, occupantGender: null },
+          { id: 'CIR-201-B', status: 'free', hygienized: false, occupantGender: null }
+        ]},
+        { room: 'CIR-202', beds: [
+          { id: 'CIR-202-A', status: 'occupied', hygienized: false, occupantGender: 'masculino' },
+          { id: 'CIR-202-B', status: 'free', hygienized: true, occupantGender: null }
+        ]}
+      ],
+      'cuidados_intensivos': [
+        { room: 'UTI-301', beds: [
+          { id: 'UTI-301-A', status: 'free', hygienized: true, occupantGender: null }
+        ]}
+      ],
+      'pediatria': [
+        { room: 'PED-401', beds: [
+          { id: 'PED-401-A', status: 'free', hygienized: true, occupantGender: null },
+          { id: 'PED-401-B', status: 'free', hygienized: true, occupantGender: null }
+        ]}
+      ],
+      'maternidad': [
+        { room: 'MAT-501', beds: [
+          { id: 'MAT-501-A', status: 'occupied', hygienized: false, occupantGender: 'femenino' },
+          { id: 'MAT-501-B', status: 'free', hygienized: true, occupantGender: null }
+        ]}
+      ]
+    };
+
+    const wingSelect = document.getElementById('hospital-wing');
+    const roomSelect = document.getElementById('room');
+    const bedSelect = document.getElementById('bed');
+    const admitBtn = document.getElementById('admit-btn');
+
+    wingSelect.addEventListener('change', (e) => {
+      const wing = e.target.value;
+      roomSelect.innerHTML = '<option value="">Seleccione una habitación</option>';
+      roomSelect.disabled = !wing;
+      bedSelect.innerHTML = '<option value="">Seleccione una habitación primero</option>';
+      bedSelect.disabled = true;
+      admitBtn.disabled = true;
+
+      if (wing && hospitalData[wing]) {
+        hospitalData[wing].forEach(room => {
+          const option = document.createElement('option');
+          option.value = room.room;
+          option.textContent = room.room;
+          roomSelect.appendChild(option);
+        });
+        roomSelect.disabled = false;
+      }
+    });
+
+    roomSelect.addEventListener('change', (e) => {
+      const wing = wingSelect.value;
+      const roomId = e.target.value;
+      bedSelect.innerHTML = '<option value="">Seleccione una cama</option>';
+      bedSelect.disabled = !roomId;
+      admitBtn.disabled = true;
+
+      if (wing && roomId) {
+        const room = hospitalData[wing].find(r => r.room === roomId);
+        if (room) {
+          room.beds.forEach(bed => {
+            // Check if bed is free and hygienized
+            if (bed.status === 'free' && bed.hygienized) {
+              // For 2-bed rooms, check gender compatibility
+              const otherBed = room.beds.find(b => b.id !== bed.id);
+              if (!otherBed || !otherBed.occupantGender || otherBed.occupantGender === patientGender) {
+                const option = document.createElement('option');
+                option.value = bed.id;
+                option.textContent = bed.id;
+                bedSelect.appendChild(option);
+              }
+            }
+          });
+          bedSelect.disabled = false;
+        }
+      }
+    });
+
+    bedSelect.addEventListener('change', (e) => {
+      admitBtn.disabled = !e.target.value;
+    });
+
+    admitBtn.addEventListener('click', () => {
+      const wing = wingSelect.value;
+      const room = roomSelect.value;
+      const bed = bedSelect.value;
+      console.log('Internación confirmada:', { wing, room, bed, patientGender });
+      // Replace with actual backend submission (e.g., POST to /admision/internacion)
+      window.location.href = '/admision/internaciones';
+    });

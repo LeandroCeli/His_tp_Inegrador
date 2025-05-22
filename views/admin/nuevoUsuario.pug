@@ -10,6 +10,12 @@ block content
 
       form(action="/usuarios/nuevoUsuario" method="POST" class="space-y-4" id="formNuevoUsuario")
         div
+          label(for="dni" class="block text-gray-700") DNI
+          input(type="text" name="dni" id="dni" class="w-full border p-2 rounded" value=dni)
+          if errores && errores.dni
+            p.text-red-600.text-sm.mt-1 #{errores.dni}
+
+        div
           label(for="nombre" class="block text-gray-700") Nombre
           input(type="text" name="nombre" id="nombre" class="w-full border p-2 rounded" value=nombre)
           if errores && errores.nombre
@@ -20,6 +26,12 @@ block content
           input(type="text" name="apellido" id="apellido" class="w-full border p-2 rounded" value=apellido)
           if errores && errores.apellido
             p.text-red-600.text-sm.mt-1 #{errores.apellido}
+
+        div
+          label(for="telefono" class="block text-gray-700") Teléfono
+          input(type="text" name="telefono" id="telefono" class="w-full border p-2 rounded" value=telefono)
+          if errores && errores.telefono
+            p.text-red-600.text-sm.mt-1 #{errores.telefono}
 
         div
           label(for="email" class="block text-gray-700") Email
@@ -38,17 +50,43 @@ block content
           select(name="rol" id="rol" class="w-full border p-2 rounded")
             option(disabled selected value="") -- Seleccione un rol --
             option(value="admin" selected=(rol === 'admin')) Administrador
-            option(value="admisión" selected=(rol === 'admisión')) Admisión
+            option(value="recepcionista" selected=(rol === 'recepcionista')) Recepcionista
             option(value="enfermeria" selected=(rol === 'enfermeria')) Enfermería
             option(value="medico" selected=(rol === 'medico')) Médico
           if errores && errores.rol
             p.text-red-600.text-sm.mt-1 #{errores.rol}
 
+        // Campos adicionales para Médico
+        div(id="camposMedico" class=(rol === 'medico' ? '' : 'hidden'))
+          div
+            label(for="especialidad" class="block text-gray-700") Especialidad
+            select(name="especialidad" id="especialidad" class="w-full border p-2 rounded")
+              option(disabled selected value="") -- Seleccione una especialidad --
+              option(value="cardiologia" selected=(especialidad === 'cardiologia')) Cardiología
+              option(value="pediatria" selected=(especialidad === 'pediatria')) Pediatría
+              option(value="neurologia" selected=(especialidad === 'neurologia')) Neurología
+              option(value="cirugia" selected=(especialidad === 'cirugia')) Cirugía
+              option(value="ginecologia" selected=(especialidad === 'ginecologia')) Ginecología
+            if errores && errores.especialidad
+              p.text-red-600.text-sm.mt-1 #{errores.especialidad}
+
+          div
+            label(for="matricula" class="block text-gray-700") Número de Matrícula
+            input(type="text" name="matricula" id="matricula" class="w-full border p-2 rounded" value=matricula)
+            if errores && errores.matricula
+              p.text-red-600.text-sm.mt-1 #{errores.matricula}
+
+          div
+            label(for="descripcion" class="block text-gray-700") Descripción Breve
+            textarea(name="descripcion" id="descripcion" class="w-full border p-2 rounded" rows="4") #{descripcion}
+            if errores && errores.descripcion
+              p.text-red-600.text-sm.mt-1 #{errores.descripcion}
+
         .flex.justify-between.items-center
           button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear usuario
           a(href="/admin/dashboard?cargar=usuarios" class="text-sm text-blue-600 hover:underline cargar-en-dinamico") Cancelar
 
-  //- Modal emergente para éxito y preguntar si desea crear otro usuario
+  // Modal emergente para éxito y preguntar si desea crear otro usuario
   if success && preguntarNuevo
     .fixed.inset-0.bg-black.bg-opacity-50.flex.justify-center.items-center
       .bg-white.rounded-lg.p-6.shadow-lg.w-96.text-center
@@ -59,20 +97,41 @@ block content
           a(href="/admin/dashboard?cargar=usuarios" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400") No (volver)
 
   script.
-    // Al hacer clic en "Sí" se limpia el formulario y cierra el modal
     document.addEventListener('DOMContentLoaded', () => {
+      const rolSelect = document.getElementById('rol');
+      const camposMedico = document.getElementById('camposMedico');
+      const form = document.getElementById('formNuevoUsuario');
       const btnNuevoCrear = document.getElementById('btnNuevoCrear');
+
+      // Mostrar/ocultar campos de médico según el rol seleccionado
+      function toggleCamposMedico() {
+        if (rolSelect.value === 'medico') {
+          camposMedico.classList.remove('hidden');
+        } else {
+          camposMedico.classList.add('hidden');
+        }
+      }
+
+      // Ejecutar al cargar la página
+      toggleCamposMedico();
+
+      // Escuchar cambios en el select de rol
+      rolSelect.addEventListener('change', toggleCamposMedico);
+
+      // Limpiar formulario y cerrar modal al hacer clic en "Sí"
       if (btnNuevoCrear) {
         btnNuevoCrear.addEventListener('click', () => {
           // Cierra el modal
           const modal = btnNuevoCrear.closest('.fixed');
           if (modal) modal.remove();
           // Limpia el formulario
-          const form = document.getElementById('formNuevoUsuario');
-          if (form) form.reset();
+          if (form) {
+            form.reset();
+            toggleCamposMedico(); // Actualizar visibilidad de campos de médico
+          }
           // Enfocar en el primer campo
-          const inputNombre = document.getElementById('nombre');
-          if (inputNombre) inputNombre.focus();
+          const inputDni = document.getElementById('dni');
+          if (inputDni) inputDni.focus();
         });
       }
     });
