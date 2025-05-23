@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('Habitacion', {
-    numero: {
+  const Habitacion = sequelize.define('Habitacion', {
+    numero_habitacion: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
@@ -9,12 +9,25 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    estado: {
+    estado_habitacion: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    id_area:  {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
-  }, {
+  }, 
+  {
     tableName: 'habitaciones',
     timestamps: false
   });
+
+  Habitacion.associate = (models) => {
+    Habitacion.belongsTo(models.area, {
+      foreignKey: 'id_area',
+      as: 'area'
+    });
+  };
+  return Habitacion;
 };

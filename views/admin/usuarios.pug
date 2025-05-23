@@ -11,17 +11,20 @@ div(class="overflow-x-auto bg-white p-6 rounded shadow max-w-4xl mx-auto")
       tr(class="bg-gray-200 text-gray-700")
         th(class="py-2 px-4") Nombre
         th(class="py-2 px-4") Apellido
+        th(class="py-2 px-4") Dni
         th(class="py-2 px-4") Email
         th(class="py-2 px-4") Rol
-        th(class="py-2 px-4") Activo
-
+        th(class="py-2 px-4") Estado
+        th(class="py-2 px-4") Acciones
     tbody
       each usuario in usuarios
         tr(class="border-b hover:bg-gray-50")
           td(class="py-2 px-4")= usuario.nombre
           td(class="py-2 px-4 capitalize")= usuario.apellido
+          td(class="py-2 px-4 capitalize")= usuario.dni
           td(class="py-2 px-4 capitalize")= usuario.email
-          td(class="py-2 px-4 capitalize")= usuario.rol
+          td(class="py-2 px-4 capitalize")= usuario.tipoUsuario.nombre_tipo
+          td(class="py-2 px-4 capitalize")= usuario.activo ? 'Activo' : 'Inactivo'
                     
           td(class="py-2 px-4")
             a(href=`/admin/editarHabitacion/${usuario.id}` class="text-blue-600 hover:underline mr-2") Editar

@@ -47,28 +47,24 @@ block content
 
         div
           label(for="rol" class="block text-gray-700") Rol
-          select(name="rol" id="rol" class="w-full border p-2 rounded")
-            option(disabled selected value="") -- Seleccione un rol --
-            option(value="admin" selected=(rol === 'admin')) Administrador
-            option(value="recepcionista" selected=(rol === 'recepcionista')) Recepcionista
-            option(value="enfermeria" selected=(rol === 'enfermeria')) Enfermería
-            option(value="medico" selected=(rol === 'medico')) Médico
+          select(name="tipo_usuario_id" id="rol" class="w-full border p-2 rounded")
+           option(value="") -- Selecciona un tipo --
+            each tipo in tiposUsuario
+              option(value=tipo.id selected=(tipo_usuario_id == tipo.id)) #{tipo.nombre_tipo}
           if errores && errores.rol
             p.text-red-600.text-sm.mt-1 #{errores.rol}
-
+           
         // Campos adicionales para Médico
-        div(id="camposMedico" class=(rol === 'medico' ? '' : 'hidden'))
+        div(id="camposMedico" class=(tipo_usuario_id == medico  ? '' : 'hidden'))
           div
             label(for="especialidad" class="block text-gray-700") Especialidad
             select(name="especialidad" id="especialidad" class="w-full border p-2 rounded")
               option(disabled selected value="") -- Seleccione una especialidad --
-              option(value="cardiologia" selected=(especialidad === 'cardiologia')) Cardiología
-              option(value="pediatria" selected=(especialidad === 'pediatria')) Pediatría
-              option(value="neurologia" selected=(especialidad === 'neurologia')) Neurología
-              option(value="cirugia" selected=(especialidad === 'cirugia')) Cirugía
-              option(value="ginecologia" selected=(especialidad === 'ginecologia')) Ginecología
+              each esp in tipoEspecialidad
+                option(value=esp.id_especialidad selected=(especialidad == esp.id_especialidad)) #{esp.nombre_especialidad}
             if errores && errores.especialidad
               p.text-red-600.text-sm.mt-1 #{errores.especialidad}
+
 
           div
             label(for="matricula" class="block text-gray-700") Número de Matrícula
@@ -102,34 +98,27 @@ block content
       const camposMedico = document.getElementById('camposMedico');
       const form = document.getElementById('formNuevoUsuario');
       const btnNuevoCrear = document.getElementById('btnNuevoCrear');
+      const idMedico = #{medico}; // Usás el valor entero directamente
 
-      // Mostrar/ocultar campos de médico según el rol seleccionado
       function toggleCamposMedico() {
-        if (rolSelect.value === 'medico') {
+        if (parseInt(rolSelect.value) === idMedico) {
           camposMedico.classList.remove('hidden');
         } else {
           camposMedico.classList.add('hidden');
         }
       }
 
-      // Ejecutar al cargar la página
       toggleCamposMedico();
-
-      // Escuchar cambios en el select de rol
       rolSelect.addEventListener('change', toggleCamposMedico);
 
-      // Limpiar formulario y cerrar modal al hacer clic en "Sí"
       if (btnNuevoCrear) {
         btnNuevoCrear.addEventListener('click', () => {
-          // Cierra el modal
           const modal = btnNuevoCrear.closest('.fixed');
           if (modal) modal.remove();
-          // Limpia el formulario
           if (form) {
             form.reset();
-            toggleCamposMedico(); // Actualizar visibilidad de campos de médico
+            toggleCamposMedico();
           }
-          // Enfocar en el primer campo
           const inputDni = document.getElementById('dni');
           if (inputDni) inputDni.focus();
         });

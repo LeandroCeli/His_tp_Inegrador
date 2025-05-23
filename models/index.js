@@ -7,6 +7,7 @@ const Habitacion = require('./Habitacion')(sequelize, DataTypes);
 const Especialidad = require('./Especialidad')(sequelize, DataTypes);
 const TipoUsuario = require('./TipoUsuario')(sequelize, DataTypes);
 const UsuarioEspecialidad = require('./UsuarioEspecialidad')(sequelize, DataTypes);
+const area=require('./area')(sequelize, DataTypes);
 
 const db = {
   sequelize,
@@ -15,11 +16,14 @@ const db = {
   Habitacion,
   Especialidad,
   TipoUsuario,
-  UsuarioEspecialidad
+  UsuarioEspecialidad,
+  area
 };
+
 
 // Ejecutar asociaciones entre modelos
 Object.values(db).forEach(model => {
+  //console.log('Procesando modelo:', model);
   if (model.associate) {
     model.associate(db);
   }

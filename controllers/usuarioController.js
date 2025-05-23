@@ -6,33 +6,43 @@ const bcrypt = require('bcrypt');
 
 const mostrarFormularioNuevoUsuario = async (req, res) => {
   try {
-  
+    /*const tiposUsuarioRaw = await TipoUsuario.findAll({
+      attributes: ['nombre_tipo']
+    });
+    const tiposUsuario = tiposUsuarioRaw.map(tipo => tipo.nombre_tipo);
+    */
     const tiposUsuario = await TipoUsuario.findAll();
-    const especialidades = await Especialidad.findAll();
-    
+    //configurando a bd el cambo nombre_tipo como unico, buscamos el id q hace referencia al medico.
+    const medico = await TipoUsuario.findOne({ where: { nombre_tipo: 'Medico' } });
+    console.log(medico.id);
+    const tipoEspecialidad = await Especialidad.findAll();
+
     const success = req.query.success === '1';
 
     res.render('admin/nuevoUsuario', {
       success,
       preguntarNuevo: true,
       tiposUsuario,
-      especialidades
+      tipoEspecialidad,
+      medico:medico.id
     });
-   
   } catch (error) {
     console.error('Error al cargar datos para el formulario:', error);
     res.render('admin/nuevoUsuario', {
       errorGeneral: 'Error al cargar el formulario.',
       preguntarNuevo: false,
       tiposUsuario: [],
-      especialidades: []
+      tipoEspecialidad: []
     });
   }
 };
 
-// Controlador para crear nuevo usuario
+
+
 const crearUsuario = async (req, res) => {
-  const { dni, nombre, apellido, telefono, email, password, rol, especialidad, descripcion, matricula } = req.body;
+  const { dni, nombre, apellido, telefono, email, password, tipo_usuario_id, especialidad, descripcion, matricula } = req.body;
+
+   console.log('******'+ tipo_usuario_id);
 
   const errores = {};
   let errorGeneral = null;
@@ -45,25 +55,34 @@ const crearUsuario = async (req, res) => {
   if (!telefono) errores.telefono = 'El teléfono es obligatorio';
   if (!email) errores.email = 'El email es obligatorio';
   if (!password) errores.password = 'La contraseña es obligatoria';
-  if (!rol) errores.rol = 'Debe seleccionar un rol';
+  if (!tipo_usuario_id) errores.rol = 'Debe seleccionar un rol';
 
   // Validaciones extra si el rol es médico
-  if (rol === 'medico') {
+  if (tipo_usuario_id === 'medico') {
     if (!especialidad) errores.especialidad = 'Debe seleccionar una especialidad';
     if (!matricula) errores.matricula = 'Debe ingresar la matrícula';
     if (!descripcion) errores.descripcion = 'Debe ingresar una descripción';
   }
 
+  // Si hay errores de validación, volver a la vista con errores y campos cargados
   if (Object.keys(errores).length > 0) {
-    return res.render('view-admin/nuevoUsuario', {
+    const tiposDb = await TipoUsuario.findAll({ attributes: ['nombre_tipo'] });
+    const tiposUsuario = tiposDb.map(t => t.nombre_tipo);
+
+    const especialidadesDb = await Especialidad.findAll({ attributes: ['nombre_especialidad'] });
+    const tipoEspecialidad = especialidadesDb.map(e => e.nombre_especialidad);
+
+    return res.render('admin/nuevoUsuario', {
       errores,
       errorGeneral,
+      tiposUsuario,
+      tipoEspecialidad,
       dni,
       nombre,
       apellido,
       telefono,
       email,
-      rol,
+      tipo_usuario_id,
       especialidad,
       matricula,
       descripcion
@@ -72,7 +91,9 @@ const crearUsuario = async (req, res) => {
 
   try {
     // Buscar ID del tipo de usuario
-    const tipo = await TipoUsuario.findOne({ where: { nombre_tipo: rol } });
+    //const tipo = await TipoUsuario.findOne({ where: { nombre_tipo: rol } });
+    const tipo = await TipoUsuario.findByPk(tipo_usuario_id);
+    console.log(tipo);
     if (!tipo) throw new Error('Rol inválido');
 
     // Hashear contraseña
@@ -90,54 +111,63 @@ const crearUsuario = async (req, res) => {
     });
 
     // Si es médico, asociar especialidad
-    if (rol === 'medico') {
-      let especialidadDb = await Especialidad.findOne({ where: { nombre_especialidad: especialidad } });
-
-      // Si no existe la especialidad, crearla
-      if (!especialidadDb) {
-        especialidadDb = await Especialidad.create({
-          nombre_especialidad: especialidad,
-          descripcion
+    console.log(tipo.nombre_tipo+'---*-*-*-*-'+ especialidad);
+    console.log(nuevoUsuario.id_usuario+'*333*3*3*3*3*3*');
+    if (tipo.nombre_tipo === 'Medico' )
+      {
+       
+        await UsuarioEspecialidad.create({
+          id_usuario: nuevoUsuario.id_usuario,
+          id_especialidad: especialidad,
+          numeroMatricula: matricula
         });
-      }
-
-      // Asociar usuario con especialidad
-      await UsuarioEspecialidad.create({
-        id_usuarios: nuevoUsuario.id_usuario,
-        id_especialidad: especialidadDb.id_especialidad
-      });
     }
 
-    // Mostrar mensaje de éxito y preguntar si desea crear otro
-    return res.render('view-admin/nuevoUsuario', {
+    // Recargar tipos para render
+    const tiposUsuario = await TipoUsuario.findAll();
+    const tipoEspecialidad = await Especialidad.findAll();
+    const medico = await TipoUsuario.findOne({ where: { nombre_tipo: 'Medico' } });
+
+    return res.render('admin/nuevoUsuario', {
       success: '¡Usuario creado con éxito!',
-      preguntarNuevo: true
+      preguntarNuevo: true,
+      tiposUsuario,
+      tipoEspecialidad,
+      medico:medico.id,
+      errores: {}
     });
 
   } catch (err) {
     console.error('Error al crear usuario:', err);
     errorGeneral = 'Hubo un error al crear el usuario. Intente nuevamente.';
-    return res.render('view-admin/nuevoUsuario', {
+
+    const tiposUsuario = await TipoUsuario.findAll();
+    const tipoEspecialidad = await Especialidad.findAll();
+    const medico = await TipoUsuario.findOne({ where: { nombre_tipo: 'Medico' } });
+    return res.render('admin/nuevoUsuario', {
       errorGeneral,
+      errores: {},
+      tiposUsuario,
+      tipoEspecialidad,
       dni,
       nombre,
       apellido,
       telefono,
       email,
-      rol,
+      tipo_usuario_id,
       especialidad,
       matricula,
-      descripcion
+      descripcion,
+      medico:medico.id
     });
   }
 };
 
 
-
 const getUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'activo'],
+      attributes: ['nombre', 'apellido','email','activo','dni'],
       include: [{
         model: TipoUsuario,
         as: 'tipoUsuario',
@@ -146,8 +176,7 @@ const getUsuarios = async (req, res) => {
       order: [['apellido', 'ASC'], ['nombre', 'ASC']]
     });
   
-
-    res.render('admin/usuarios', { usuarios });
+      res.render('admin/usuarios', { usuarios });
   } catch (err) {
     console.error('Error al cargar usuarios:', err);
     res.render('admin/usuarios', {

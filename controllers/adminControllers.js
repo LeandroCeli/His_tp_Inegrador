@@ -5,16 +5,16 @@ const getDashboard = async (req, res) => {
    
     const totalUsuarios = await Usuario.count();
    // const pendientes = await SolicitudRegistro.count({ where: { estado: 'pendiente' } });
-    //const habitaciones = await Habitacion.count();
+    const habitaciones = await Habitacion.count(); // vemo el tema de  
     // Renderizar la vista del dashboard
     res.render('admin/dashboard', {
       totalUsuarios,
       //cantidadPendientes: pendientes,
-      //habitaciones
+      habitaciones,
     
        // Por el momento
       cantidadPendientes: 0,
-      habitaciones: 0
+      //habitaciones: 0
     });
   } catch (err) {
     console.error('Error cargando dashboard:', err);
