@@ -1,49 +1,57 @@
 extends ../layouts/layout
 
 block content
-  h2(class="text-2xl font-bold mb-6 text-gray-800") Crear Nueva Habitación
+  div(class="flex items-center justify-center min-h-screen bg-gray-50")
+    div(class="bg-white p-8 rounded shadow max-w-md w-full")
 
-  if success && preguntarOtraHabitacion
-    // Modal flotante
-    div(class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50")
-      div(class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full")
-        h3(class="text-xl font-bold text-green-700 mb-4") ¡Habitación creada exitosamente!
-        p(class="mb-4") ¿Desea crear otra habitación?
-        div(class="flex justify-end space-x-4")
-          a(href="/areaInternaciones/formularioNuevaHabitacion" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Sí, crear otra
-          a(href="/admin/dashboard?cargar=areaInternaciones" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400") No, salir
+      h2(class="text-2xl font-bold mb-6 text-gray-800 text-center") Crear Nueva Habitación
 
-  if errorGeneral
-    div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4")
-      strong(class="font-bold") ¡Error!
-      span(class="block sm:inline")= errorGeneral
+      if errorGeneral
+        div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4")
+          strong(class="font-bold") ¡Error!
+          span(class="block sm:inline") #{errorGeneral}
 
-  form(action="/areaInternaciones/nuevaHabitacion" method="POST" class="bg-white p-6 rounded shadow max-w-lg space-y-4")
-    - var errores = errores || {};
-    if errores.numero
-      div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2")= errores.numero
-    div
-      label(for="numero" class="block text-sm font-medium text-gray-700") Número de Habitación
-      input(type="text" name="numero" id="numero" required class="mt-1 block w-full border p-2 rounded" value=numero)
+      form(action="/areaInternaciones/nuevaHabitacion" method="POST" class="space-y-4")
+        // Selección de Área
+        if errores.area
+          div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative")= errores.area
+        div
+          label(for="id_area" class="block text-sm font-medium text-gray-700") Área
+          select(name="id_area" id="id_area" required class="mt-1 block w-full border p-2 rounded")
+            option(value="") -- Seleccione un área --
+            each area in areas
+              option(
+                value=area.id_area
+                selected=(id_area == area.id_area)
+              ) #{area.nombre_area}
 
-    if errores.tipo
-      div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2")= errores.tipo
-    div
-      label(for="tipo" class="block text-sm font-medium text-gray-700") Tipo de Habitación
-      select(name="tipo" id="tipo" required class="mt-1 block w-full border p-2 rounded")
-        option(value="") -- Seleccione --
-        option(value="simple" selected=tipo=="simple") Simple
-        option(value="doble" selected=tipo=="doble") Doble
-        option(value="emergencia" selected=tipo=="emergencia") Área de Emergencia
+        // Número de habitación
+        if errores.numero
+          div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative")= errores.numero
+        div
+          label(for="numero" class="block text-sm font-medium text-gray-700") Número de Habitación
+          input(
+            type="text"
+            name="numero"
+            id="numero"
+            required
+            class="w-full p-2 rounded border"
+            value=numero
+            placeholder="Ej: 101"
+          )
 
-    if errores.estado
-      div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2")= errores.estado
-    div
-      label(for="estado" class="block text-sm font-medium text-gray-700") Estado
-      select(name="estado" id="estado" required class="mt-1 block w-full border p-2 rounded")
-        option(value="disponible" selected=(estado === 'disponible')) Disponible
-        option(value="mantenimiento" selected=(estado === 'mantenimiento')) En Mantenimiento
+        // Tipo de habitación
+        if errores.tipo
+          div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative")= errores.tipo
+        div
+          label(for="tipo" class="block text-sm font-medium text-gray-700") Tipo de Habitación
+          select(name="tipo" id="tipo" required class="mt-1 block w-full border p-2 rounded")
+            option(value="") -- Seleccione --
+            option(value="simple" selected=tipo=="simple") Simple
+            option(value="doble" selected=tipo=="doble") Doble
+            option(value="emergencia" selected=tipo=="emergencia") Área de Emergencia
 
-    div(class="flex justify-between")
-      button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear Habitación
-      a(href="/admin/dashboard?cargar=areaInternaciones" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400") Cancelar
+        // Botones
+        div(class="flex justify-between mt-4")
+          button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Crear Habitación
+          a(href="/admin/dashboard?cargar=areaInternaciones" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400") Cancelar

@@ -7,7 +7,8 @@ const Habitacion = require('./Habitacion')(sequelize, DataTypes);
 const Especialidad = require('./Especialidad')(sequelize, DataTypes);
 const TipoUsuario = require('./TipoUsuario')(sequelize, DataTypes);
 const UsuarioEspecialidad = require('./UsuarioEspecialidad')(sequelize, DataTypes);
-const area=require('./area')(sequelize, DataTypes);
+const Area=require('./Area')(sequelize, DataTypes);
+const Cama=require('./Cama')(sequelize, DataTypes);
 
 const db = {
   sequelize,
@@ -17,7 +18,8 @@ const db = {
   Especialidad,
   TipoUsuario,
   UsuarioEspecialidad,
-  area
+  Area,
+  Cama
 };
 
 

@@ -5,7 +5,7 @@ const requireLogin = require('../middlewares/authMiddleware');
 const InternacionesController = require('../controllers/internacionesController'); 
 
 router.get('/formularioNuevaHabitacion',requireLogin,InternacionesController.formularioNuevaHabitacion);
-router.post('/nuevaHabitacion',requireLogin,InternacionesController.crearHabitacion);
+router.post('/nuevaHabitacion',requireLogin,InternacionesController.crearNuevaHabitacion);
 
 
 
