@@ -23,9 +23,22 @@ const formularioNuevaHabitacion = async (req, res) => {
 
 const getAreaInternaciones = async (req, res) => {
   try {
+    console.log('ACa');
     const habitaciones = await Habitacion.findAll({
-      attributes: ['numero', 'tipo', 'estado']
+      attributes: ['numero_habitacion','tipo','id_area', 'estado_habitacion'],
+      include: [
+        {
+          model:Area,
+          as:'Area',
+          attributes:['nombre_area']
+        }
+      ],
+      order: [
+        [{ model: Area, as: 'Area' }, 'nombre_area', 'ASC'], 
+        ['numero_habitacion', 'ASC'] 
+      ]
     });
+   
     res.render('admin/areaInternaciones', { habitaciones });
   } catch (err) {
     console.error('Error al cargar habitaciones:', err);
@@ -74,7 +87,9 @@ const crearNuevaHabitacion = async (req, res) => {
     estado_habitacion: 'disponible' // poner estado por defecto
   });
 
-  return res.redirect('/areaInternaciones/nuevaHabitacion?success=1');
+  //return res.redirect('/areaInternaciones/nuevaHabitacion?success=1');
+  return res.redirect('/admin/dashboard?cargar=areaInternaciones');
+ 
 };
 
 

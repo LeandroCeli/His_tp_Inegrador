@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     estado_habitacion: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: 'estado_habitacion'  // <- corregir aquí el nombre de la columna
+      field: 'estado_habitacion' 
     },
     id_area:  {
       type: DataTypes.INTEGER,

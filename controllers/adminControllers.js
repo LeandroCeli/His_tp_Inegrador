@@ -43,13 +43,14 @@ const getUsuarios = async (req, res) =>
   }
 
 }
-
+*/
 const getAreaInternaciones = async (req,res) => 
 {
   try {
     // Consulta a la base de datos para obtener todos los usuarios
+    
     const habitaciones = await Habitacion.findAll({ 
-      attributes: ['numero', 'tipo', 'estado'] 
+      attributes: ['numero_habitacion','tipo','id_area ', 'estado_habitacion'] 
     });
      
     // Renderiza la vista y envía los datos de usuarios
@@ -60,7 +61,7 @@ const getAreaInternaciones = async (req,res) =>
     res.render('admin/areaInternaciones', { habitaciones: [] });
   }
 }
-
+/*
 const getPendientes = async (req,res) => 
 {
   try 
@@ -77,5 +78,5 @@ const getPendientes = async (req,res) =>
 
 module.exports = {
   getDashboard,
-
+  getAreaInternaciones
 };

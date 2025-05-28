@@ -17,9 +17,10 @@ div(class="overflow-x-auto bg-white p-6 rounded shadow max-w-4xl mx-auto")
     tbody
       each habitacion in habitaciones
         tr(class="border-b hover:bg-gray-50")
-          td(class="py-2 px-4")= habitacion.numero
+          td(class="py-2 px-4")= habitacion.Area.nombre_area
+          td(class="py-2 px-4 capitalize")= habitacion.numero_habitacion
           td(class="py-2 px-4 capitalize")= habitacion.tipo
-          td(class="py-2 px-4 capitalize")= habitacion.estado
+          td(class="py-2 px-4 capitalize")= habitacion.estado_habitacion
           td(class="py-2 px-4")
             a(href=`/admin/editarHabitacion/${habitacion.id}` class="text-blue-600 hover:underline mr-2") Editar
             a(href=`/admin/eliminarHabitacion/${habitacion.id}` class="text-red-600 hover:underline") Eliminar
