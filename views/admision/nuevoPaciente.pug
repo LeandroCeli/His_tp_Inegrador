@@ -8,6 +8,23 @@ block content
       // Personal Information
       div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
         div
+          label(for="dni" class="block text-sm font-medium text-gray-700") DNI
+          input(id="dni" name="dni" type="text" readonly class="mt-1 block w-full bg-gray-100 rounded-md border-gray-300 shadow-sm" required)
+        div
+          label(for="admission-type" class="block text-sm font-medium text-gray-700") Tipo de Ingreso
+          select(id="admission-type" name="tipo-ingreso" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+            option(value="") Seleccione una opción
+            option(value="emergencia") Emergencia Espontánea
+            option(value="derivacion") Derivación desde Guardia
+            option(value="cita") Cita Programada
+            option(value="traslado") Traslado desde otro Hospital
+
+      // Campos dinámicos según tipo de ingreso
+      div(id="ingreso-campos" class="space-y-4")
+
+      // Nombre y Apellido
+      div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+        div
           label(for="name" class="block text-sm font-medium text-gray-700") Nombre
           input(id="name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
         div
@@ -43,7 +60,7 @@ block content
         label(for="nationality" class="block text-sm font-medium text-gray-700") Nacionalidad
         input(id="nationality" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
 
-      // Medical Information
+      // Medical Info
       div
         label(for="blood-type" class="block text-sm font-medium text-gray-700") Grupo Sanguíneo
         select(id="blood-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
@@ -57,7 +74,7 @@ block content
           option(value="O+") O+
           option(value="O-") O-
 
-      // Health Insurance
+      // Insurance
       div
         label(for="insurance" class="block text-sm font-medium text-gray-700") Seguro Médico
         select(id="insurance" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50")
@@ -71,45 +88,95 @@ block content
 
       div(id="insurance-details" class="hidden")
         label(for="insurance-name" class="block text-sm font-medium text-gray-700") Nombre del Seguro (si seleccionó "Otro")
-        input(id="insurance-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50")
+        input(id="insurance-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm")
         label(for="affiliate-number" class="block text-sm font-medium text-gray-700 mt-4") Número de Afiliado
-        input(id="affiliate-number" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50")
+        input(id="affiliate-number" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm")
 
-      // Referring Doctor and Observations
       div
         label(for="referring-doctor" class="block text-sm font-medium text-gray-700") Médico que Indica la Internación
-        input(id="referring-doctor" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
+        input(id="referring-doctor" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required)
 
       div
         label(for="observations" class="block text-sm font-medium text-gray-700") Observaciones Adicionales
-        textarea(id="observations" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" rows="4")
+        textarea(id="observations" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" rows="4")
 
       // Form Buttons
       div(class="flex justify-end gap-4")
-        a(href="/admision" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
-        button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200") Registrar Paciente
+        a(href="/admision/dashboard" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400") Cancelar
+        button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Registrar Paciente
 
   script.
+    const tipoIngreso = document.getElementById('admission-type');
+    const ingresoCampos = document.getElementById('ingreso-campos');
+
+    const templates = {
+      emergencia: `
+        <div>
+          <label for="codigo-ingreso" class="block text-sm font-medium text-gray-700">Código de Ingreso</label>
+          <input id="codigo-ingreso" name="codigo-ingreso" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+      `,
+      derivacion: `
+        <div>
+          <label for="medico-derivante" class="block text-sm font-medium text-gray-700">Médico Derivante</label>
+          <input id="medico-derivante" name="medico-derivante" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+        <div>
+          <label for="descripcion-derivacion" class="block text-sm font-medium text-gray-700">Descripción</label>
+          <textarea id="descripcion-derivacion" name="descripcion-derivacion" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+        </div>
+      `,
+      cita: `
+        <div>
+          <label for="medico-cita" class="block text-sm font-medium text-gray-700">Médico Solicitante</label>
+          <input id="medico-cita" name="medico-cita" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+      `,
+      traslado: `
+        <div>
+          <label for="hospital-origen" class="block text-sm font-medium text-gray-700">Nombre del Hospital</label>
+          <input id="hospital-origen" name="hospital-origen" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+        <div>
+          <label for="motivo-traslado" class="block text-sm font-medium text-gray-700">Motivo del Traslado</label>
+          <textarea id="motivo-traslado" name="motivo-traslado" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+        </div>
+      `
+    };
+
+    tipoIngreso.addEventListener('change', e => {
+      ingresoCampos.innerHTML = '';
+      const tipo = e.target.value;
+      if (templates[tipo]) ingresoCampos.innerHTML = templates[tipo];
+    });
+
+    // Param autofill
+    const params = new URLSearchParams(window.location.search);
+    const dni = params.get('dni');
+    const tipo = params.get('tipo');
+    if (dni) document.getElementById('dni').value = dni;
+    if (tipo) {
+      tipoIngreso.value = tipo;
+      tipoIngreso.dispatchEvent(new Event('change'));
+      //tipoIngreso.disabled = true;
+    }
+
+    // Seguro Médico dinámico
     const insuranceSelect = document.getElementById('insurance');
     const insuranceDetails = document.getElementById('insurance-details');
     const insuranceName = document.getElementById('insurance-name');
     const affiliateNumber = document.getElementById('affiliate-number');
 
     insuranceSelect.addEventListener('change', (e) => {
-      if (e.target.value && e.target.value !== 'ninguno') {
-        insuranceDetails.classList.remove('hidden');
-        insuranceName.required = e.target.value === 'otro';
-        affiliateNumber.required = true;
-      } else {
-        insuranceDetails.classList.add('hidden');
-        insuranceName.required = false;
-        affiliateNumber.required = false;
-      }
+      const val = e.target.value;
+      const show = val && val !== '' && val !== 'ninguno';
+      insuranceDetails.classList.toggle('hidden', !show);
+      insuranceName.required = val === 'otro';
+      affiliateNumber.required = show;
     });
 
     document.getElementById('patient-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      // Handle form submission (e.g., send data to server)
-      console.log('Form submitted');
-      // Reset form or redirect as needed
+      // Aquí se puede implementar la lógica para guardar
+      alert('Paciente registrado (simulado)');
     });

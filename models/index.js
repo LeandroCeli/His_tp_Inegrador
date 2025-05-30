@@ -9,6 +9,8 @@ const TipoUsuario = require('./TipoUsuario')(sequelize, DataTypes);
 const UsuarioEspecialidad = require('./UsuarioEspecialidad')(sequelize, DataTypes);
 const Area=require('./Area')(sequelize, DataTypes);
 const Cama=require('./Cama')(sequelize, DataTypes);
+const Mutual= require('./Mutual')(sequelize, DataTypes);
+const Paciente= require('./Paciente')(sequelize, DataTypes);
 
 const db = {
   sequelize,
@@ -19,7 +21,9 @@ const db = {
   TipoUsuario,
   UsuarioEspecialidad,
   Area,
-  Cama
+  Cama,
+  Mutual,
+  Paciente
 };
 
 

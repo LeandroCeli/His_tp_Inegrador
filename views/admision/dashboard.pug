@@ -26,39 +26,23 @@ block content
       a(href="/admision/emergencia" class="bg-red-600 text-white px-6 py-3 rounded hover:bg-red-700 transition duration-200" title="Para pacientes en estado urgente") 🚨 Admisión de Emergencia
       button(id="new-admission-btn" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition duration-200 ml-4") 🏥 Nueva Admisión
 
-  // Modal for New Admission
+    // Modal for New Admission
   div(id="admission-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden")
     div(class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md")
-      h3(class="text-lg font-semibold text-gray-700 mb-4") Nueva Admisión
+      h3(class="text-lg font-semibold text-gray-700 mb-4") Buscar o Registrar Paciente
       form(id="admission-form")
         div(class="mb-4")
-          label(for="dni" class="block text-sm font-medium text-gray-700") DNI
+          label(for="dni" class="block text-sm font-medium text-gray-700") DNI del Paciente
           input(id="dni" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
-        
-        div(class="mb-4")
-          label(for="admission-type" class="block text-sm font-medium text-gray-700") Tipo de Ingreso
-          select(id="admission-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required)
-            option(value="") Seleccione una opción
-            option(value="emergencia") Emergencia Espontánea
-            option(value="derivacion") Derivación desde Guardia
-            option(value="cita") Cita Programada
-            option(value="reinternacion") Reinternación Reciente
-            option(value="traslado") Traslado desde otro Hospital
 
-        // Dynamic Fields
-        div(id="dynamic-fields" class="mb-4")
-          // Fields will be populated based on admission type
-
-        div(class="flex justify-end gap-4")
+        div(class="flex justify-end gap-4 mt-6")
           button(type="button" id="cancel-btn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
-          button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200") Confirmar
+          button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200") Buscar
 
   script.
     const modal = document.getElementById('admission-modal');
     const openBtn = document.getElementById('new-admission-btn');
     const cancelBtn = document.getElementById('cancel-btn');
-    const admissionType = document.getElementById('admission-type');
-    const dynamicFields = document.getElementById('dynamic-fields');
     const form = document.getElementById('admission-form');
 
     openBtn.addEventListener('click', () => {
@@ -71,41 +55,38 @@ block content
       dynamicFields.innerHTML = '';
     });
 
-    admissionType.addEventListener('change', (e) => {
-      dynamicFields.innerHTML = '';
-      const type = e.target.value;
+    form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+       
+        const dni = document.getElementById('dni').value.trim();
+       
 
-      if (type === 'emergencia') {
-        dynamicFields.innerHTML = `
-          <label for="unique-id" class="block text-sm font-medium text-gray-700">ID Único de Ingreso</label>
-          <input id="unique-id" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
-        `;
-      } else if (type === 'derivacion') {
-        dynamicFields.innerHTML = `
-          <label for="doctor" class="block text-sm font-medium text-gray-700">Médico solicitante</label>
-          <input id="doctor" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
-        `;
-      } else if (type === 'cita') {
-        dynamicFields.innerHTML = `
-          <label for="doctor-order" class="block text-sm font-medium text-gray-700">Médico solicitante</label>
-          <input id="doctor-order" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
-        `;
-      } else if (type === 'traslado') {
-        dynamicFields.innerHTML = `
-          <label for="hospital" class="block text-sm font-medium text-gray-700 mt-4">Hospital de Origen</label>
-          <input id="hospital" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
-          <label for="reason" class="block text-sm font-medium text-gray-700 mt-4">Motivos</label>
-          <textarea id="reason" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required></textarea>
-        `;
-      }
-    });
+        try 
+        {
+        
+          const response = await fetch(`/admision/paciente/buscar?dni=${dni}`);
+          const data = await response.json();
+          if (response.ok) {
+            
+            
+           window.location.href = data.redirectUrl;
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      console.log('Form data submitted:', Object.fromEntries(formData));
-      modal.classList.add('hidden');
-      form.reset();
-      dynamicFields.innerHTML = '';
-      window.location.href = '/admision/paciente';
-    });
+          } else 
+                if (response.status === 404) 
+                {
+                window.location.href = data.redirectUrl;
+          
+          } else 
+          {
+            throw new Error('Error al consultar el paciente');
+          }
+        } catch (error) 
+        {
+          console.error(error);
+          alert(`Error: ${error.message}`);
+        }
+
+        modal.classList.add('hidden');
+        form.reset();
+        dynamicFields.innerHTML = '';
+      });
