@@ -5,6 +5,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const sequelize = require('./config/sequelize'); // Conexión a la BD
 
+
 // Importación de rutas
 const indexRoutes = require('./routes/index');
 const authRoutes = require('./routes/login');
@@ -31,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Archivos estáticos
 app.use('/js', express.static(path.join(__dirname, 'public/js')));
-
+app.use(express.static(path.join(__dirname, 'public')));
 // Sesión
 app.use(session({
     secret: 'claveSecreta123',

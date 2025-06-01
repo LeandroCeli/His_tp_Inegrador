@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true
       },
-      nombre: {
+      nombre_mutual: {
         type: DataTypes.STRING,
         allowNull: false
       }
@@ -14,10 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    Mutual.associate = function(models) {
-      Mutual.hasMany(models.Paciente, {
+    Mutual.associate = models => {
+      Mutual.belongsToMany(models.Paciente, {
+        through: models.PacienteMutual,
         foreignKey: 'id_mutual',
-        as: 'pacientes'
+        otherKey: 'id_paciente'
       });
     };
   

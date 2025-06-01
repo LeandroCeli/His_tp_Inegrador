@@ -39,23 +39,17 @@ module.exports = (sequelize, DataTypes) => {
       grupo_sanguineo: {
         type: DataTypes.STRING
       },
-      id_mutual: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          model: 'Mutuales',
-          key: 'id_mutual'
-        }
-      }
-    }, {
+      
+    }, 
+    {
       tableName: 'pacientes',
       timestamps: false
     });
   
-    Paciente.associate = function(models) {
-      Paciente.belongsTo(models.Mutual, {
-        foreignKey: 'id_mutual',
-        as: 'mutual'
+    Paciente.associate = models => {
+      Paciente.belongsToMany(models.Mutual, {
+        through: models.PacienteMutual,
+        foreignKey: 'id_paciente'
       });
     };
   
