@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     estado_habitacion: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
       field: 'estado_habitacion' 
     },
@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'id_area',
       as: 'Area'
     });
+    Habitacion.hasMany(models.Cama, {
+      foreignKey: 'id_habitacion',
+      as: 'Camas' // alias usado luego en el include
+    });
+    
   };
   return Habitacion;
 };

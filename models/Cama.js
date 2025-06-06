@@ -10,15 +10,19 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      estado: {
-        type: DataTypes.ENUM('ocupado', 'libre'),
-        allowNull: false,
-        defaultValue: 'libre'
+      estado: { 
+        type: DataTypes.STRING,
+        allowNull: false
       },
       higiene: {
         type: DataTypes.ENUM('limpia', 'sucia'),
         allowNull: false,
         defaultValue: 'limpia'
+      },
+      genero_ocupante: {
+        type: DataTypes.ENUM('masculino', 'femenino'),
+        allowNull: true,
+        defaultValue: null
       }
     }, {
       tableName: 'camas',

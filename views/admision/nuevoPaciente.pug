@@ -10,14 +10,7 @@ block content
         div
           label(for="dni" class="block text-sm font-medium text-gray-700") DNI
           input(id="dni" name="dni" type="text" readonly class="mt-1 block w-full bg-gray-100 rounded-md border-gray-300 shadow-sm" required)
-        div
-          label(for="admission-type" class="block text-sm font-medium text-gray-700") Tipo de Ingreso
-          select(name="id_ingreso" id="admission-type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm")
-            option(value="") Seleccione tipo de ingreso
-            each i in ingreso
-             if i.nombre !== 'Reinternación Reciente'
-               option(value=i.id_ingreso) #{i.nombre}
-
+       
       div(id="ingreso-campos" class="space-y-4")
 
       div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
@@ -80,9 +73,7 @@ block content
         label(for="affiliate-number" class="block text-sm font-medium text-gray-700") Número de Afiliado
         input(id="affiliate-number" name="affiliateNumber" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required)
 
-      div
-        label(for="referring-doctor" class="block text-sm font-medium text-gray-700") Médico que Indica la Internación
-        input(id="referring-doctor" name="referringDoctor " type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required)
+     
 
       div
         label(for="observations" class="block text-sm font-medium text-gray-700") Observaciones Adicionales

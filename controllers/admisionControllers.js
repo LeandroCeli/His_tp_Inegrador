@@ -1,20 +1,29 @@
-const { Paciente , Mutual, Ingreso, PacienteMutual } = require('../models');
+const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama} = require('../models');
 
   const getPacientePorDNI = async (req, res) => 
   {
     const dni = req.query.dni;
-    const tipoIngreso = req.query.tipo;
-    console.log(tipoIngreso+'**');
+    
     if (!dni) return res.status(400).json({ error: 'DNI no enviado' });
   
     try {
       const paciente = await Paciente.findOne({ where: { dni } });
         if (paciente) 
           {
+            
+                     
+            req.session.informacionPaciente = 
+            {
+              d_paciente: paciente.id_paciente,
+              paciente: paciente.nombre + ' ' + paciente.apellido,
+              edad: calcularEdad(paciente.fecha_nacimiento),
+              genero: paciente.genero
+            };
+           
             res.status(200).json({
               encontrado: true,
-              redirectUrl: `/admision/paciente/${paciente.id_paciente}`
-            });
+              redirectUrl: `/admision/pacienteRegistrado`,
+               });
             
           
       } else 
@@ -32,22 +41,33 @@ const { Paciente , Mutual, Ingreso, PacienteMutual } = require('../models');
   };
 
 
+  const getDatosIniciales = async (req, res) => {
+    try {
+      const tiposIngreso = await Ingreso.findAll({ attributes: ['id_ingreso', 'nombre'] });
+      const areas = await Area.findAll({ attributes: ['id_area', 'nombre_area'] });
+      const info = req.session.informacionPaciente || null;
+     
+     
+        res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al cargar datos iniciales' });
+    }
+  };
+  
+
+
+
    const getFormularioNuevoPaciente = async (req,res) =>
    {
       try { 
             const mutual = await Mutual.findAll({ 
               attributes: ['id_mutual','nombre_mutual'] 
             });
-
-            const ingreso = await Ingreso.findAll({ 
-              attributes: ['id_ingreso','nombre'] 
-            });
-
-            res.render('admision/nuevoPaciente', { mutual ,ingreso});
+          res.render('admision/nuevoPaciente', {mutual});
     } catch (err) 
     {
-      console.error('Error al cargar ingreso/Mutual:', err);
-      
+      console.error('Error al cargar Mutual:', err);
     }
    }
 
@@ -64,18 +84,12 @@ const { Paciente , Mutual, Ingreso, PacienteMutual } = require('../models');
           address,
           nationality,
           bloodType,
-          // estos no van a la tabla paciente pero se necesitan después:
-          id_ingreso,
-          codigoIngreso,
-          hospitalOrigen,
-          motivoTraslado,
-          referringDoctor,
           id_mutual,
           affiliateNumber
 
         } = req.body;
 
-        console.log(id_mutual+'******')
+        
 
         // 1. Guardar solo datos del paciente
         const nuevoPaciente = await Paciente.create({
@@ -104,18 +118,20 @@ const { Paciente , Mutual, Ingreso, PacienteMutual } = require('../models');
 
 
 
-        // 2. Guardar datos para la siguiente vista en la sesión
-        req.session.informacionInternacion = {
+        const tiposIngreso = await Ingreso.findAll({ attributes: ['id_ingreso', 'nombre'] });
+        const areas =await Area.findAll(); // obtengo las Areas Disponibles
+        req.session.informacionPaciente = {
           id_paciente: nuevoPaciente.id_paciente,
-          id_ingreso,
-          codigoIngreso,
-          hospitalOrigen,
-          motivoTraslado,
-          medico_solicitante: referringDoctor
-        };
-
-        // 3. Redirigir a la vista que completará la internación
-        res.redirect('/admision/continuarInternacion');
+          genero: gender,
+          edad : calcularEdad(dob),
+          paciente: nuevoPaciente.nombre + ' ' + nuevoPaciente.apellido,
+          tiposIngreso:tiposIngreso,
+          Areas:areas
+           };
+ 
+       
+        
+        res.redirect('/admision/paciente');
 
       } catch (error) {
         console.error('Error al registrar paciente:', error);
@@ -123,8 +139,92 @@ const { Paciente , Mutual, Ingreso, PacienteMutual } = require('../models');
       }
     };
 
+    function calcularEdad(fechaNacimiento) {
+      const hoy = new Date();
+      const nacimiento = new Date(fechaNacimiento);
+      let edad = hoy.getFullYear() - nacimiento.getFullYear();
+      const mes = hoy.getMonth() - nacimiento.getMonth();
+    
+      if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+      }
+    
+      return edad;
+    }
+
+    const HDisponibles = async (req, res) => {
+      const { id_area } = req.params;
+      const { genero } = req.query;
+    
+      try {
+        const habitaciones = await Habitacion.findAll({
+          where: {
+            id_area,
+            tipo: ['simple', 'doble'],
+            estado_habitacion: [1, 2]
+          },
+          include: {
+            model: Cama,
+            as: 'Camas',
+            required: false 
+          }
+        });
+    
+        const resultado = [];
+    
+        for (const h of habitaciones) {
+          const camasDisponibles = h.Camas.filter(c =>
+            c.estado.toLowerCase() === 'disponible' && c.higiene.toLowerCase() === 'limpia'
+          );
+    
+          // si no hay camas disponibles limpias, ignorar esta habitación
+          if (camasDisponibles.length === 0) continue;
+    
+          if (h.tipo === 'doble' && h.estado_habitacion === 1) {
+            const camasOcupadas = await Cama.findAll({
+              where: {
+                id_habitacion: h.id_habitacion,
+                estado: 'ocupada'
+              }
+            });
+    
+            if (camasOcupadas.length > 0) {
+              const generoOcupante = camasOcupadas[0].genero_ocupante;
+              if (generoOcupante && generoOcupante !== genero) {
+                continue;
+              }
+            }
+          }
+    
+          resultado.push({
+            id_habitacion: h.id_habitacion,
+            numero_habitacion: h.numero_habitacion,
+            tipo: h.tipo,
+            camas: camasDisponibles.map(c => ({
+              id_cama: c.id_cama,
+              estado: c.estado,
+              higiene: c.higiene,
+              genero_ocupante: c.genero_ocupante
+            }))
+          });
+        }
+    
+        return res.json(resultado);
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Error al buscar habitaciones' });
+      }
+    };
+    
+    
+
+    
+
+
    module.exports = {
     getPacientePorDNI,
     getFormularioNuevoPaciente,
-    cargarPaciente
+    cargarPaciente,
+    getDatosIniciales,
+    HDisponibles
   };

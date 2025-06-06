@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       descripcion: {
         type: DataTypes.STRING,
-        allowNull: true // Puede ser opcional, ajusta según tus necesidades
+        allowNull: true 
       }
     }, {
       tableName: 'areas',
