@@ -1,5 +1,6 @@
 // ================== IMPORTACIONES ==================
 require('dotenv').config();
+require('./models/sync');
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
