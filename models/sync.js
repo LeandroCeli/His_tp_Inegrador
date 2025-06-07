@@ -1,5 +1,3 @@
-require('./Area');
-require('./Cama');
 require('./Especialidad');
 require('./Habitacion');
 require('./index');
@@ -13,3 +11,5 @@ require('./SolicitudRegistro');
 require('./TipoUsuario');
 require('./Usuario');
 require('./UsuarioEspecialidad');
+require('./areaModels');
+require('./camaModels');
