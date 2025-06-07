@@ -7,8 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     numero_habitacion: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
+      allowNull: false
     },
     tipo: {
       type: DataTypes.STRING,
@@ -17,17 +16,28 @@ module.exports = (sequelize, DataTypes) => {
     estado_habitacion: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'estado_habitacion' 
+      field: 'estado_habitacion'
     },
-    id_area:  {
+    id_area: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'areas',
+        key: 'id_area'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT'
     }
-  }, 
-  {
+  }, {
     tableName: 'habitaciones',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['numero_habitacion', 'id_area']
+      }
+    ]
   });
 
   Habitacion.associate = (models) => {
@@ -37,9 +47,9 @@ module.exports = (sequelize, DataTypes) => {
     });
     Habitacion.hasMany(models.Cama, {
       foreignKey: 'id_habitacion',
-      as: 'Camas' // alias usado luego en el include
+      as: 'Camas'
     });
-    
   };
+
   return Habitacion;
 };

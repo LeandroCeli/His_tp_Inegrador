@@ -127,7 +127,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
           edad : calcularEdad(dob),
           paciente: nuevoPaciente.nombre + ' ' + nuevoPaciente.apellido,
           tiposIngreso:tiposIngreso,
-          Areas:areas
+          areas:areas
            };
  
         

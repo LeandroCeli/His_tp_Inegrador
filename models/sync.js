@@ -1,0 +1,15 @@
+require('./Area');
+require('./Cama');
+require('./Especialidad');
+require('./Habitacion');
+require('./index');
+require('./Ingreso');
+require('./Internacion');
+require('./Mutual');
+require('./Paciente');
+require('./PacienteMutual');
+require('./Registro');
+require('./SolicitudRegistro');
+require('./TipoUsuario');
+require('./Usuario');
+require('./UsuarioEspecialidad');
