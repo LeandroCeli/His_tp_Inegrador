@@ -10,12 +10,7 @@ router.get('/paciente/:id', requireLogin, (req, res) => {res.render('admision/pa
 router.get('/pacienteRegistrado',requireLogin,admisionControllers.getDatosIniciales);
 router.get('/pacienteNuevo', requireLogin, admisionControllers.getFormularioNuevoPaciente);
 router.post('/pacienteCarga', requireLogin, admisionControllers.cargarPaciente);
-
-
 router.get('/habitacionesDisponibles/:id_area',requireLogin, admisionControllers.HDisponibles);
-
-
-
 router.get('/paciente', requireLogin, (req, res) => {
     const info = req.session.informacionPaciente || null;
     res.render('admision/paciente', 
@@ -25,5 +20,11 @@ router.get('/paciente', requireLogin, (req, res) => {
       areas:info.areas
       });
   });
+
+  router.post('/internarPaciente', requireLogin, admisionControllers.registrarInternacion );
+
+
+
+
 
 module.exports = router;

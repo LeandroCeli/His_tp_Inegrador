@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const resultadoDiv = document.getElementById('resultado-sugerencia');
 
 
+
+
   const templates = {
     emergencia: `
       <div>
@@ -162,9 +164,105 @@ document.addEventListener('DOMContentLoaded', function () {
     if (confirmarBtn) confirmarBtn.disabled = !completo;
   }
 
-  // Escuchar cambios para verificación dinámica
+  
   document.querySelectorAll('#medico-indicador, #admission-type, #hospital-wing, #room, #bed').forEach(el => {
     el?.addEventListener('input', checkFormReady);
     el?.addEventListener('change', checkFormReady);
   });
+
+
+  if (confirmarBtn) {
+          
+  
+     confirmarBtn.addEventListener('click', async function () {
+      const medico = document.getElementById('medico-indicador')?.value.trim();
+      const ingreso = tipoIngreso?.value;
+      const ingresoNombre = tipoIngreso?.options[tipoIngreso.selectedIndex]?.text;
+      const area = alaSelect?.value;
+      const AreaNombre = alaSelect?.options[alaSelect.selectedIndex]?.text;
+      const habitacionId = habitacionSelect?.value;
+      const camaId = camaSelect?.value;
+  
+      if (!medico || !ingreso || !area || !habitacionId || !camaId) {
+        resultadoDiv.textContent = 'Faltan completar datos obligatorios para la internación.';
+        return;
+      }
+  
+      const habitacion = habitacionesCache.find(h => h.id_habitacion == habitacionId);
+      const cama = habitacion?.camas?.find(c => c.id_cama == camaId);
+  
+      const mensaje = `
+        <strong>Nombre del paciente:</strong> ${datosDiv.dataset.nombre}<br>
+        <strong>Género:</strong> ${datosDiv.dataset.genero}<br>
+        <strong>Médico responsable:</strong> ${medico}<br>
+        <strong>Tipo de ingreso:</strong> ${ingresoNombre}<br>
+        <strong>Área seleccionada:</strong> ${AreaNombre}<br>
+        <strong>Habitación:</strong> ${habitacion?.numero_habitacion} (${habitacion?.tipo})<br>
+        <strong>Cama:</strong> #${cama?.id_cama} (${cama?.estado})
+      `;
+  
+      // Mostrar modal
+      document.getElementById('modal-mensaje').innerHTML = mensaje;
+      document.getElementById('modal-confirmacion').classList.remove('hidden');
+  
+      // Confirmar acción
+      document.getElementById('btn-confirmar').onclick = async () => {
+        document.getElementById('modal-confirmacion').classList.add('hidden');
+       
+        try {
+          const response = await fetch('/admision/internarPaciente', {
+            method: 'POST',
+            headers: 
+            {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id_paciente: datosDiv.dataset.id_paciente,
+              id_cama: camaId,
+              fecha_ingreso: new Date().toISOString(),
+              medico_solicitante: medico,
+              id_ingreso: ingreso,
+              genero:datosDiv.dataset.genero
+            }),
+          });
+      
+          const result = await response.json();
+      
+          if (response.ok)
+             {
+            showModal('✔️ Internación confirmada exitosamente. Redirigiendo...', 'success');
+          
+            setTimeout(() => 
+              {
+              window.location.href = '/'; 
+            }, 10500); 
+          } else {
+            showModal(`❌ Error: ${result.error || 'No se pudo registrar la internación.'}`, 'error');
+          }
+        } catch (error) 
+        {
+          console.error('Error al confirmar internación:', error);
+          showModal('❌ Error inesperado al confirmar la internación.', 'error');
+        }
+  
+     //   resultadoDiv.textContent = '✅ Internación confirmada exitosamente.';
+      };
+  
+      // Cancelar
+      document.getElementById('btn-cancelar').onclick = () => {
+        document.getElementById('modal-confirmacion').classList.add('hidden');
+      };
+    });
+  }
+  
+ 
+   
+
+
+
+
 });
+
+
+
+

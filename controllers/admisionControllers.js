@@ -1,4 +1,4 @@
-const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama} = require('../models');
+const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Internacion} = require('../models');
 
   const getPacientePorDNI = async (req, res) => 
   {
@@ -14,7 +14,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama} = requ
                      
             req.session.informacionPaciente = 
             {
-              d_paciente: paciente.id_paciente,
+              id_paciente: paciente.id_paciente,
               paciente: paciente.nombre + ' ' + paciente.apellido,
               edad: calcularEdad(paciente.fecha_nacimiento),
               genero: paciente.genero
@@ -47,6 +47,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama} = requ
       const areas = await Area.findAll({ attributes: ['id_area', 'nombre_area'] });
       const info = req.session.informacionPaciente || null;
      
+      
      
         res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
     } catch (error) {
@@ -129,7 +130,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama} = requ
           Areas:areas
            };
  
-       
+        
         
         res.redirect('/admision/paciente');
 
@@ -216,7 +217,53 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama} = requ
       }
     };
     
+    const registrarInternacion  = async (req, res) => 
+    {
+      const { id_paciente, id_cama, fecha_ingreso, medico_solicitante, id_ingreso,genero } = req.body;
+      console.log('*******id_paciente:'+id_paciente) ;
+
+      try {
+           await Internacion.create({
+          id_paciente,
+          id_cama,
+          fecha_ingreso,
+          fecha_alta: null, // aún no hay alta
+          medico_solicitante,
+          id_ingreso
+        });
+                       
+            const cama = await Cama.findByPk(id_cama);
+            if (!cama) {
+              return res.status(404).json({ error: 'Cama no encontrada' });
+            }
+
+            const habitacion = await Habitacion.findByPk(cama.id_habitacion);
+            if (!habitacion) {
+              return res.status(404).json({ error: 'Habitación no encontrada' });
+            }
+            console.log('*****'+ genero);
+           
+            await cama.update({
+              estado: 'ocupada',
+              genero_ocupante: genero 
+            });
+
+          
+            if (habitacion.estado_habitacion > 0) {
+              const nuevoEstado = habitacion.estado_habitacion - 1;
+              await habitacion.update({
+                estado_habitacion: nuevoEstado
+              });
+            }
+
+               return res.status(201).json({ message: 'Internación registrada con éxito.' });
+          } catch (error) {
+            console.error('Error al registrar internación:', error);
+            return res.status(500).json({ error: 'No se pudo registrar la internación.' });
+          }
     
+    
+    };
 
     
 
@@ -226,5 +273,6 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama} = requ
     getFormularioNuevoPaciente,
     cargarPaciente,
     getDatosIniciales,
-    HDisponibles
+    HDisponibles,
+    registrarInternacion 
   };

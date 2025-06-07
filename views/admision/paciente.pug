@@ -4,16 +4,18 @@ block content
   h2(class="text-2xl font-bold mb-6 text-gray-800 text-center") Admisión de Paciente
 
   div(class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow")
-
+  
     // Nombre del paciente
     div(class="text-center mb-6")
       h3(class="text-lg font-semibold text-gray-700") Paciente
       p(class="text-2xl font-bold text-blue-600 mt-2") #{informacionPaciente.paciente|| 'Nombre del Paciente'}
       p(class="text-2xl font-bold text-blue-600 mt-2") Edad: #{informacionPaciente.edad}
-    
+   
     div#datos-paciente(
       data-edad=informacionPaciente.edad
       data-genero=informacionPaciente.genero
+      data-nombre=informacionPaciente.paciente 
+      data-id_paciente=informacionPaciente.id_paciente
       style="display:none"
 )
 
@@ -68,7 +70,16 @@ block content
 
     // Botones de acción final
     div(class="flex justify-end gap-4")
-      a(href="/admision" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
+      a(href="/" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
       button(id="admit-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200" disabled) Confirmar Internación
+   
+    // Modal de confirmación
+    #modal-confirmacion.hidden.fixed.inset-0.bg-black.bg-opacity-50.flex.items-center.justify-center.z-50
+          .bg-white.p-6.rounded.shadow-md.w-96
+            h2.text-xl.font-bold.mb-4 Confirmar Internación
+            #modal-mensaje.text-sm.mb-4
+            .flex.justify-end.space-x-2
+              button#btn-cancelar.bg-gray-400.text-white.px-4.py-2.rounded Cancelar
+              button#btn-confirmar.bg-green-600.text-white.px-4.py-2.rounded Confirmar
 
   script(src="/js/paciente.js")
