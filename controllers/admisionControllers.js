@@ -1,5 +1,43 @@
 const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Internacion, Emergencia} = require('../models');
 
+
+   const getPrincipal = async (req, res) => 
+   {
+    try {
+      //INTERNACIONES
+      const internacionesActivas = await Internacion.count({
+        where: { fecha_alta: null }
+      });
+      //CAMAS
+      const camasDisponibles = await Cama.count({
+        where: { estado: 'disponible' } // o estado: true
+      });
+      //PACIENTES
+      const pacientesRegistrados = await Paciente.count();
+
+      console.log('*-*-*-*'+ internacionesActivas);
+      console.log('*-*-*-*'+ camasDisponibles);
+      console.log('*-*-*-*'+ pacientesRegistrados);
+
+
+
+      res.render('admision/dashboard', {
+        internacionesActivas,
+        camasDisponibles,
+        pacientesRegistrados,
+      
+      });
+    } catch (err) {
+      console.error('Error cargando dashboard:', err);
+      res.render('admin/dashboard', {
+        internacionesActivas: 0,
+        camasDisponibles: 0,
+        pacientesRegistrados: 0
+      });
+    }
+   }
+
+
   const getPacientePorDNI = async (req, res) => 
   {
     const dni = req.query.dni;
@@ -339,5 +377,6 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
     HDisponibles,
     registrarInternacion,
     guardarEmergencia,
-    generarCodigoUnico
+    generarCodigoUnico,
+    getPrincipal
   };

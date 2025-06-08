@@ -25,25 +25,7 @@ const getDashboard = async (req, res) => {
     });
   }
 };
-/*
-const getUsuarios = async (req, res) => 
-{
-  try 
-  {
-    // Consulta a la base de datos para obtener todos los usuarios
-    const usuarios = await Usuario.findAll({ 
-      attributes: ['nombre', 'apellido', 'email', 'rol', 'activo'] 
-    });
 
-    // Renderiza la vista y envía los datos de usuarios
-    res.render('admin/usuarios', { usuarios });
-  } catch (err) {
-    console.error('Error al cargar usuarios:', err);
-    res.render('admin/usuarios', { usuarios: [] });
-  }
-
-}
-*/
 const getAreaInternaciones = async (req,res) => 
 {
   try {
@@ -61,21 +43,6 @@ const getAreaInternaciones = async (req,res) =>
     res.render('admin/areaInternaciones', { habitaciones: [] });
   }
 }
-/*
-const getPendientes = async (req,res) => 
-{
-  try 
-  {
-    const pendientes = await SolicitudRegistro.findAll();
-    res.render('admin/pendientes', { pendientes });
-  } catch (err) {
-    console.error('Error al cargar solicitudes pendientes:', err);
-    res.render('admin/pendientes', { pendientes: [] });
-  }
-}
-
-*/
-
 module.exports = {
   getDashboard,
   getAreaInternaciones
