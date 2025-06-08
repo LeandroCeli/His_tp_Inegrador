@@ -22,7 +22,7 @@ const requireLogin = require('./middlewares/authMiddleware');
 
 // ================== INICIALIZACIÓN ==================
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // ================== CONFIGURACIONES ==================
 app.set('view engine', 'pug');
