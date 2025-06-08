@@ -1,0 +1,60 @@
+extends ../layouts/layout
+
+block content
+  .min-h-screen.bg-gray-100.flex.items-center.justify-center
+    .bg-white.shadow-md.rounded-lg.p-8.max-w-lg.w-full
+      h2.text-2xl.font-bold.text-blue-700.mb-6.text-center 📝 Datos del Paciente
+
+      form#formEditarPaciente(method="POST" action=`/admision/paciente/${paciente.id_paciente}/editar`)
+        .mb-4
+          label.block.text-sm.font-medium(for="nombre") Nombre
+          input#nombre(type="text" name="nombre" value=paciente.nombre required class="w-full p-2 border rounded")
+
+        .mb-4
+          label.block.text-sm.font-medium(for="apellido") Apellido
+          input#apellido(type="text" name="apellido" value=paciente.apellido required class="w-full p-2 border rounded")
+
+        .mb-4
+          label.block.text-sm.font-medium(for="dni") DNI
+          input#dni(type="text" name="dni" value=paciente.dni readonly disabled class="w-full p-2 border rounded bg-gray-200")
+
+        .mb-4
+          label.block.text-sm.font-medium(for="fecha_nacimiento") Fecha de Nacimiento
+          input#fecha_nacimiento(type="date" name="fecha_nacimiento" value=paciente.fecha_nacimiento class="w-full p-2 border rounded")
+
+        .mb-4
+          label.block.text-sm.font-medium(for="genero") Género
+          select#genero(name="genero" class="w-full p-2 border rounded")
+            option(value="Masculino" selected=paciente.genero === 'Masculino') Masculino
+            option(value="Femenino" selected=paciente.genero === 'Femenino') Femenino
+            option(value="Otro" selected=paciente.genero === 'Otro') Otro
+
+        .mb-4
+          label.block.text-sm.font-medium(for="telefono") Teléfono
+          input#telefono(type="text" name="telefono" value=paciente.telefono class="w-full p-2 border rounded")
+
+        .mb-4
+          label.block.text-sm.font-medium(for="telefono_emergencia") Teléfono de Emergencia
+          input#telefono_emergencia(type="text" name="telefono_emergencia" value=paciente.telefono_emergencia class="w-full p-2 border rounded")
+
+        .mb-4
+          label.block.text-sm.font-medium(for="grupo_sanguineo") Grupo Sanguíneo
+          input#grupo_sanguineo(type="text" name="grupo_sanguineo" value=paciente.grupo_sanguineo class="w-full p-2 border rounded")
+
+        .mb-4
+          label.block.text-sm.font-medium(for="direccion") Dirección
+          input#direccion(type="text" name="direccion" value=paciente.domicilio class="w-full p-2 border rounded")
+
+        // Botón Guardar Cambios centrado
+        .mt-6.flex.justify-center
+          button(type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200")
+            | 💾 Guardar Cambios
+
+      // Botón Eliminar Paciente centrado
+      form(method="POST" action=`/admision/paciente/${paciente.id_paciente}/eliminar?_method=DELETE` onsubmit="return confirm('¿Estás seguro de eliminar al paciente?');" class="mt-4 flex justify-center")
+        button(type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-200")
+          | 🗑️ Eliminar Paciente
+
+      // Botón Volver
+      .mt-6.text-center
+        a(href="/admision/pacienteRegistrado" class="text-blue-600 hover:underline text-sm") ⬅️ Volver

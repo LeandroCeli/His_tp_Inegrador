@@ -14,18 +14,11 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       });
       //PACIENTES
       const pacientesRegistrados = await Paciente.count();
-
-      console.log('*-*-*-*'+ internacionesActivas);
-      console.log('*-*-*-*'+ camasDisponibles);
-      console.log('*-*-*-*'+ pacientesRegistrados);
-
-
-
       res.render('admision/dashboard', {
         internacionesActivas,
         camasDisponibles,
         pacientesRegistrados,
-      
+        query: req.query 
       });
     } catch (err) {
       console.error('Error cargando dashboard:', err);
@@ -36,6 +29,47 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       });
     }
    }
+
+   const getDatosPaciente = async (req, res) => 
+   {
+      
+    const paciente = await Paciente.findByPk(req.params.id);
+        if (!paciente) return res.status(404).send('Paciente no encontrado');
+         res.render('admision/datosPaciente', { paciente });
+   }
+   const actualizarPaciente = async (req, res) => 
+    {
+        
+     try 
+     {
+      await Paciente.update(req.body, { where: { id_paciente : req.params.id } });
+      console.log('Se actualizo');
+      const paciente = await Paciente.findByPk(req.params.id);
+      res.render('admision/datosPaciente', { paciente });
+    } catch (error) 
+    {
+      console.error(error);
+      res.status(500).send('Error actualizando paciente');
+    }
+    }
+
+
+
+    const eliminarPaciente = async (req, res) => 
+      {
+          console.log('Se elimino');
+        try {
+          await Paciente.destroy({
+            where: {
+              id_paciente: req.params.id
+            }
+          });
+          res.redirect('/admision/dashboard?msg=Paciente eliminado'); 
+        } catch (error) {
+          console.error('Error al eliminar paciente:', error);
+          res.status(500).send('Error al eliminar paciente');
+        }
+      }
 
 
   const getPacientePorDNI = async (req, res) => 
@@ -378,5 +412,8 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
     registrarInternacion,
     guardarEmergencia,
     generarCodigoUnico,
-    getPrincipal
+    getPrincipal,
+    getDatosPaciente,
+    actualizarPaciente,
+    eliminarPaciente
   };

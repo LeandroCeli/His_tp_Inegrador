@@ -6,7 +6,7 @@ const admisionController = require('../controllers/admisionControllers');
 
 router.get('/dashboard', requireLogin,admisionControllers.getPrincipal);
 router.get('/paciente/buscar', requireLogin, admisionControllers.getPacientePorDNI);
-router.get('/paciente/:id', requireLogin, (req, res) => {res.render('admision/paciente'); });
+router.get('/paciente/:id', requireLogin, (req, res) => {res.render('admision/paciente')});
 router.get('/pacienteRegistrado',requireLogin,admisionControllers.getDatosIniciales);
 router.get('/pacienteNuevo', requireLogin, admisionControllers.getFormularioNuevoPaciente);
 router.post('/pacienteCarga', requireLogin, admisionControllers.cargarPaciente);
@@ -26,5 +26,8 @@ router.post('/internarPaciente', requireLogin, admisionControllers.registrarInte
 router.get('/emergencia',requireLogin,(req, res) => {res.render('admision/emergencia'); }); 
 router.post('/emergencia',requireLogin,admisionController.guardarEmergencia);
 
+router.get('/datos/:id',requireLogin,admisionControllers.getDatosPaciente);
+router.post('/paciente/:id/editar',requireLogin,admisionControllers.actualizarPaciente);
+router.post('/paciente/:id/eliminar',requireLogin,admisionControllers.eliminarPaciente);
 
 module.exports = router;

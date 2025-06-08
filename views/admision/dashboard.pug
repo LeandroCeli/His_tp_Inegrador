@@ -3,6 +3,11 @@ extends ../layouts/layout
 block content
   h2(class="text-2xl font-bold mb-6 text-gray-800 text-center") Panel de Admisión
 
+  // ✅ Muestra mensaje con alert si viene por query
+  if query && query.msg
+    script.
+      alert("#{query.msg}");
+
   div(class="grid grid-cols-1 md:grid-cols-3 gap-6")
     div(class="bg-white p-6 rounded shadow text-center")
       h3(class="text-lg font-semibold text-gray-700") Pacientes registrados
@@ -26,7 +31,7 @@ block content
       a(href="/admision/emergencia" class="bg-red-600 text-white px-6 py-3 rounded hover:bg-red-700 transition duration-200" title="Para pacientes en estado urgente") 🚨 Admisión de Emergencia
       button(id="new-admission-btn" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition duration-200 ml-4") 🏥 Nueva Admisión
 
-    // Modal for New Admission
+  // Modal for New Admission
   div(id="admission-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden")
     div(class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md")
       h3(class="text-lg font-semibold text-gray-700 mb-4") Buscar o Registrar Paciente
@@ -44,6 +49,7 @@ block content
     const openBtn = document.getElementById('new-admission-btn');
     const cancelBtn = document.getElementById('cancel-btn');
     const form = document.getElementById('admission-form');
+    const dynamicFields = document.getElementById('dynamic-fields');
 
     openBtn.addEventListener('click', () => {
       modal.classList.remove('hidden');
@@ -52,50 +58,36 @@ block content
     cancelBtn.addEventListener('click', () => {
       modal.classList.add('hidden');
       form.reset();
-      dynamicFields.innerHTML = '';
+      if (dynamicFields) dynamicFields.innerHTML = '';
     });
 
     form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-       
-        const dni = document.getElementById('dni').value.trim();
-       
+      e.preventDefault();
+      const dni = document.getElementById('dni').value.trim();
 
-        try 
-        {
-            const response = await fetch(`/admision/paciente/buscar?dni=${dni}`);
-              const data = await response.json();
-              if (data.encontrado) 
-              {
-                 if(data.yaInternado)
-                 {
-                    alert(data.mensaje); // paciente cargado ya admitido en area internaciones aun Activo
-                 }
-                 else 
-                 {
-                    window.location.href = data.redirectUrl;
-                 }
-                           
-              }
-              else 
-              {
-                  if (response.status === 404) 
-                    {
-                    window.location.href = data.redirectUrl;
-                    } else 
-                    {
-                      throw new Error('Error al consultar el paciente');
-                    }
-              }
-             
-          
-        } catch (error) 
-        {
-          console.error(error);
-          alert(`Error: ${error.message}`);
+      try {
+        const response = await fetch(`/admision/paciente/buscar?dni=${dni}`);
+        const data = await response.json();
+
+        if (data.encontrado) {
+          if (data.yaInternado) {
+            alert(data.mensaje);
+          } else {
+            window.location.href = data.redirectUrl;
+          }
+        } else {
+          if (response.status === 404) {
+            window.location.href = data.redirectUrl;
+          } else {
+            throw new Error('Error al consultar el paciente');
+          }
         }
+      } catch (error) {
+        console.error(error);
+        alert(`Error: ${error.message}`);
+      }
 
-        modal.classList.add('hidden');
-        form.reset();
-        dynamicFields.innerHTML = '';
-      });
+      modal.classList.add('hidden');
+      form.reset();
+      if (dynamicFields) dynamicFields.innerHTML = '';
+    });
