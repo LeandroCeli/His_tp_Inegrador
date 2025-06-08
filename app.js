@@ -65,10 +65,22 @@ app.get('/logout', (req, res) => {
 });
 
 // ================== INICIAR SERVIDOR ==================
+/*
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
-
+*/
+sequelize.sync({ alter: true }) // o { force: false } según lo que necesites
+  .then(() => {
+    console.log('✅ Base de datos sincronizada correctamente');
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('❌ Error al sincronizar la base de datos:', error);
+  });
 
 
 // ADMISION

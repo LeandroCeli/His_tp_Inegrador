@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_paciente'
       });
     };
-  
+   
     return Paciente;
   };
   

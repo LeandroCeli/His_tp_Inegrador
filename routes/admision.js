@@ -30,4 +30,6 @@ router.get('/datos/:id',requireLogin,admisionControllers.getDatosPaciente);
 router.post('/paciente/:id/editar',requireLogin,admisionControllers.actualizarPaciente);
 router.post('/paciente/:id/eliminar',requireLogin,admisionControllers.eliminarPaciente);
 
+//router.get('/pacientes',requireLogin,admisionControllers.mostrarPacientes);
+
 module.exports = router;

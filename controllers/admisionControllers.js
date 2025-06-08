@@ -14,6 +14,8 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       });
       //PACIENTES
       const pacientesRegistrados = await Paciente.count();
+
+      
       res.render('admision/dashboard', {
         internacionesActivas,
         camasDisponibles,
@@ -29,6 +31,9 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       });
     }
    }
+
+
+  
 
    const getDatosPaciente = async (req, res) => 
    {
@@ -133,10 +138,8 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       const tiposIngreso = await Ingreso.findAll({ attributes: ['id_ingreso', 'nombre'] });
       const areas = await Area.findAll({ attributes: ['id_area', 'nombre_area'] });
       const info = req.session.informacionPaciente || null;
-     
-      
-     
-        res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
+      console.log('*-*-*'+informacionPaciente);
+      res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error al cargar datos iniciales' });
