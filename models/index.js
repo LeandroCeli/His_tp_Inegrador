@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
+const emergencia = require('./emergencia');
 
 const Usuario = require('./Usuario')(sequelize, DataTypes);
 const SolicitudRegistro = require('./SolicitudRegistro')(sequelize, DataTypes);
@@ -14,7 +15,7 @@ const Internacion = require('./Internacion')(sequelize, DataTypes);
 const PacienteMutual = require('./PacienteMutual')(sequelize, DataTypes);
 const Area = require('./areaModels')(sequelize, DataTypes);
 const Cama = require('./camaModels')(sequelize, DataTypes);
-
+const Emergencia = require('./emergencia')(sequelize, DataTypes);
 
 const db = {
   sequelize,
@@ -30,7 +31,8 @@ const db = {
   Internacion,
   PacienteMutual,
   Cama,
-  Area
+  Area,
+  Emergencia
 };
 
 

@@ -1,0 +1,44 @@
+extends ../layouts/layout
+
+block content
+  .min-h-screen.bg-red-50.flex.items-center.justify-center
+    .bg-white.shadow-lg.rounded-xl.p-8.w-full.max-w-md.border-t-8.border-red-600
+      h2.text-2xl.font-bold.text-red-700.mb-6.text-center 🚨 Admisión de Emergencia
+
+      form#formEmergencia(method="POST")
+        .mb-4
+          label.block.text-sm.font-medium.mb-1(for="genero") Género
+          select#genero(name="genero" required class="w-full p-2 border rounded")
+            option(value="") Seleccionar...
+            option(value="M") Masculino
+            option(value="F") Femenino
+            option(value="X") Otro
+
+        .mb-4
+          label.block.text-sm.font-medium.mb-1(for="tipo_emergencia") Tipo de Emergencia
+          select#tipo_emergencia(name="tipo_emergencia" required class="w-full p-2 border rounded")
+            option(value="") Seleccionar...
+            option(value="parto") Parto
+            option(value="accidente") Accidente
+            option(value="convulsion") Convulsión
+            option(value="dolor_pecho") Dolor de Pecho
+            option(value="otro") Otro
+
+        .mb-4
+          label.block.text-sm.font-medium.mb-1 Código de Ingreso
+          input#codigoEmergencia(type="text" class="w-full p-2 border rounded bg-gray-100" readonly)
+
+        button(type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-200")
+          | Confirmar Ingreso
+        button(type="button" class="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mt-4" onclick="window.history.back()")
+          | Volver  
+
+      // Cartel de confirmación
+      .mt-4#mensajeConfirmacion(style="display:none")
+        .bg-green-100.border.border-green-400.text-green-700.p-4.rounded
+          strong ✅ Emergencia registrada exitosamente.
+          p Código de ingreso: 
+            span.font-bold.text-lg#codigoGenerado
+          p 🩺 Imprimiendo pulsera identificatoria...
+
+  script(src="/js/emergencia.js")

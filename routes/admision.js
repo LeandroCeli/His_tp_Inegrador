@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const requireLogin = require('../middlewares/authMiddleware');
 const admisionControllers = require('../controllers/admisionControllers');
-
+const admisionController = require('../controllers/admisionControllers');
 
 router.get('/dashboard', requireLogin, (req, res) => {res.render('admision/dashboard'); });
 router.get('/paciente/buscar', requireLogin, admisionControllers.getPacientePorDNI);
@@ -21,10 +21,10 @@ router.get('/paciente', requireLogin, (req, res) => {
       });
   });
 
-  router.post('/internarPaciente', requireLogin, admisionControllers.registrarInternacion );
+router.post('/internarPaciente', requireLogin, admisionControllers.registrarInternacion );
 
-
-
+router.get('/emergencia',requireLogin,(req, res) => {res.render('admision/emergencia'); }); 
+router.post('/emergencia',requireLogin,admisionController.guardarEmergencia);
 
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Internacion} = require('../models');
+const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Internacion, Emergencia} = require('../models');
 
   const getPacientePorDNI = async (req, res) => 
   {
@@ -10,21 +10,36 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       const paciente = await Paciente.findOne({ where: { dni } });
         if (paciente) 
           {
-            
-                     
-            req.session.informacionPaciente = 
+            const internacionActiva = await Internacion.findOne({
+              where: {
+                id_paciente: paciente.id_paciente,
+                fecha_alta: null 
+              }
+            });
+            if (internacionActiva) 
+              {
+              return res.status(200).json({
+                encontrado: true,
+                yaInternado: true,
+                mensaje: 'El paciente ya se encuentra internado actualmente.',
+                //redirectUrl: `/admision/pacienteYaInternado`
+              });
+            }
+            else
             {
-              id_paciente: paciente.id_paciente,
-              paciente: paciente.nombre + ' ' + paciente.apellido,
-              edad: calcularEdad(paciente.fecha_nacimiento),
-              genero: paciente.genero
-            };
-           
-            res.status(200).json({
-              encontrado: true,
-              redirectUrl: `/admision/pacienteRegistrado`,
-               });
-            
+                  req.session.informacionPaciente = 
+                {
+                  id_paciente: paciente.id_paciente,
+                  paciente: paciente.nombre + ' ' + paciente.apellido,
+                  edad: calcularEdad(paciente.fecha_nacimiento),
+                  genero: paciente.genero
+                };
+              
+                res.status(200).json({
+                  encontrado: true,
+                  redirectUrl: `/admision/pacienteRegistrado`,
+                  });
+            } 
           
       } else 
       {
@@ -265,6 +280,54 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
     
     };
 
+
+    
+
+    const guardarEmergencia = async (req, res) => {
+      try {
+        const { genero, tipo_emergencia } = req.body;
+    
+        const codigo = await generarCodigoUnico(genero);
+    
+        const nuevaEmergencia = await Emergencia.create({
+          codigo,
+          genero,
+          tipo_emergencia,
+          fecha_ingreso: new Date()
+        });
+    
+        res.status(201).json({
+          mensaje: 'Ingreso de emergencia confirmado.',
+          codigo: nuevaEmergencia.codigo
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ mensaje: 'Error al registrar la emergencia.' });
+      }
+    } 
+    // garantizar q ele codigo sea unico
+    async function generarCodigoUnico(genero) {
+      let codigo;
+      let existe = true;
+    
+      while (existe) {
+        const now = new Date();
+        const fecha = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const hora = now.toTimeString().slice(0, 8).replace(/:/g, '');
+        const rand = Math.floor(100 + Math.random() * 900); // 3 dígitos aleatorios
+    
+        codigo = `${genero}-${fecha}-${hora}-${rand}`;
+    
+        // Verificar en base de datos si ya existe el código
+        const encontrado = await Emergencia.findOne({ where: { codigo } });
+        if (!encontrado) {
+          existe = false; // Código único encontrado
+        }
+      }
+      return codigo;
+    }
+
+
     
 
 
@@ -274,5 +337,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
     cargarPaciente,
     getDatosIniciales,
     HDisponibles,
-    registrarInternacion 
+    registrarInternacion,
+    guardarEmergencia,
+    generarCodigoUnico
   };

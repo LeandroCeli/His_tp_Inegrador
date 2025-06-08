@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const templates = {
     emergencia: `
       <div>
-        <label for="codigo-ingreso" class="block text-sm font-medium text-gray-700">Código de Ingreso</label>
+        <label for="codigo-ingreso" class="block text-sm font-medium text-gray-700">Código de Ingreso/Escanear Pulcera</label>
         <input id="codigo-ingreso" name="codigoIngreso" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
       </div>
       <div class="mt-4">

@@ -63,23 +63,32 @@ block content
 
         try 
         {
-        
-          const response = await fetch(`/admision/paciente/buscar?dni=${dni}`);
-          const data = await response.json();
-          if (response.ok) {
-            
-            
-           window.location.href = data.redirectUrl;
-
-          } else 
-                if (response.status === 404) 
-                {
-                window.location.href = data.redirectUrl;
+            const response = await fetch(`/admision/paciente/buscar?dni=${dni}`);
+              const data = await response.json();
+              if (data.encontrado) 
+              {
+                 if(data.yaInternado)
+                 {
+                    alert(data.mensaje); // paciente cargado ya admitido en area internaciones aun Activo
+                 }
+                 else 
+                 {
+                    window.location.href = data.redirectUrl;
+                 }
+                           
+              }
+              else 
+              {
+                  if (response.status === 404) 
+                    {
+                    window.location.href = data.redirectUrl;
+                    } else 
+                    {
+                      throw new Error('Error al consultar el paciente');
+                    }
+              }
+             
           
-          } else 
-          {
-            throw new Error('Error al consultar el paciente');
-          }
         } catch (error) 
         {
           console.error(error);

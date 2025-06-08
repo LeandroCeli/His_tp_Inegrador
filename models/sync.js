@@ -13,3 +13,4 @@ require('./Usuario');
 require('./UsuarioEspecialidad');
 require('./areaModels');
 require('./camaModels');
+require('./emergencia');
