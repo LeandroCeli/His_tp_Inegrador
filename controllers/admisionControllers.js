@@ -138,7 +138,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       const tiposIngreso = await Ingreso.findAll({ attributes: ['id_ingreso', 'nombre'] });
       const areas = await Area.findAll({ attributes: ['id_area', 'nombre_area'] });
       const info = req.session.informacionPaciente || null;
-      console.log('*-*-*'+informacionPaciente);
+     
       res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
     } catch (error) {
       console.error(error);

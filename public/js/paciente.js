@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const confirmarBtn = document.getElementById('admit-btn');
   const resultadoDiv = document.getElementById('resultado-sugerencia');
 
-
-
+  let habitacionesCache = [];
 
   const templates = {
     emergencia: `
@@ -91,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!idArea || !genero) {
         resultadoDiv.textContent = 'Seleccione un área válida con género definido.';
+        resultadoDiv.style.display = 'block';
+        resultadoDiv.style.color = 'red';
         return;
       }
 
@@ -98,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const response = await fetch(`/admision/habitacionesDisponibles/${idArea}?genero=${genero}`);
         const data = await response.json();
 
-        habitacionesCache = data; // Cacheamos las habitaciones
+        habitacionesCache = data;
 
         habitacionSelect.innerHTML = '<option value="">Seleccione una habitación</option>';
 
@@ -119,11 +120,12 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Error al cargar habitaciones:', error);
         habitacionSelect.innerHTML = '<option value="">Error al cargar habitaciones</option>';
         resultadoDiv.textContent = 'Error al cargar habitaciones. Intente nuevamente.';
+        resultadoDiv.style.display = 'block';
+        resultadoDiv.style.color = 'red';
       }
     });
   }
 
-  // Cargar camas disponibles al seleccionar una habitación (sin segundo fetch)
   if (habitacionSelect) {
     habitacionSelect.addEventListener('change', function () {
       const idHabitacion = parseInt(this.value);
@@ -152,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Verificación de formulario para activar botón
   function checkFormReady() {
     const medico = document.getElementById('medico-indicador')?.value.trim();
     const ingreso = tipoIngreso?.value;
@@ -160,21 +161,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const habitacion = habitacionSelect?.value;
     const cama = camaSelect?.value;
 
+    console.log('checkFormReady:', { medico, ingreso, area, habitacion, cama });
+
     const completo = medico && ingreso && area && habitacion && cama;
-    if (confirmarBtn) confirmarBtn.disabled = !completo;
+    if (confirmarBtn) {
+      confirmarBtn.disabled = !completo;
+      if (!completo) {
+        let mensajeError = 'Por favor, complete: ';
+        if (!medico) mensajeError += 'Médico, ';
+        if (!ingreso) mensajeError += 'Tipo de ingreso, ';
+        if (!area) mensajeError += 'Área, ';
+        if (!habitacion) mensajeError += 'Habitación, ';
+        if (!cama) mensajeError += 'Cama';
+        resultadoDiv.textContent = mensajeError.replace(/, $/, '.');
+        resultadoDiv.style.display = 'block';
+        resultadoDiv.style.color = 'red';
+      } else {
+        resultadoDiv.textContent = '';
+        resultadoDiv.style.display = 'none';
+      }
+    }
   }
 
-  
   document.querySelectorAll('#medico-indicador, #admission-type, #hospital-wing, #room, #bed').forEach(el => {
     el?.addEventListener('input', checkFormReady);
     el?.addEventListener('change', checkFormReady);
   });
 
-
   if (confirmarBtn) {
-          
-  
-     confirmarBtn.addEventListener('click', async function () {
+    confirmarBtn.addEventListener('click', async function () {
       const medico = document.getElementById('medico-indicador')?.value.trim();
       const ingreso = tipoIngreso?.value;
       const ingresoNombre = tipoIngreso?.options[tipoIngreso.selectedIndex]?.text;
@@ -182,15 +197,26 @@ document.addEventListener('DOMContentLoaded', function () {
       const AreaNombre = alaSelect?.options[alaSelect.selectedIndex]?.text;
       const habitacionId = habitacionSelect?.value;
       const camaId = camaSelect?.value;
-  
+
+      console.log('Valores al hacer clic en Confirmar:', { medico, ingreso, area, habitacionId, camaId });
+
       if (!medico || !ingreso || !area || !habitacionId || !camaId) {
-        resultadoDiv.textContent = 'Faltan completar datos obligatorios para la internación.';
+        let mensajeError = 'Faltan completar: ';
+        if (!medico) mensajeError += 'Médico, ';
+        if (!ingreso) mensajeError += 'Tipo de ingreso, ';
+        if (!area) mensajeError += 'Área, ';
+        if (!habitacionId) mensajeError += 'Habitación, ';
+        if (!camaId) mensajeError += 'Cama';
+        resultadoDiv.textContent = mensajeError.replace(/, $/, '.');
+        resultadoDiv.style.display = 'block';
+        resultadoDiv.style.color = 'red';
+        console.warn('Faltan datos obligatorios:', { medico, ingreso, area, habitacionId, camaId });
         return;
       }
-  
+
       const habitacion = habitacionesCache.find(h => h.id_habitacion == habitacionId);
       const cama = habitacion?.camas?.find(c => c.id_cama == camaId);
-  
+
       const mensaje = `
         <strong>Nombre del paciente:</strong> ${datosDiv.dataset.nombre}<br>
         <strong>Género:</strong> ${datosDiv.dataset.genero}<br>
@@ -200,20 +226,17 @@ document.addEventListener('DOMContentLoaded', function () {
         <strong>Habitación:</strong> ${habitacion?.numero_habitacion} (${habitacion?.tipo})<br>
         <strong>Cama:</strong> #${cama?.id_cama} (${cama?.estado})
       `;
-  
-      // Mostrar modal
+
       document.getElementById('modal-mensaje').innerHTML = mensaje;
       document.getElementById('modal-confirmacion').classList.remove('hidden');
-  
-      // Confirmar acción
+
       document.getElementById('btn-confirmar').onclick = async () => {
         document.getElementById('modal-confirmacion').classList.add('hidden');
-       
+
         try {
           const response = await fetch('/admision/internarPaciente', {
             method: 'POST',
-            headers: 
-            {
+            headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -222,47 +245,41 @@ document.addEventListener('DOMContentLoaded', function () {
               fecha_ingreso: new Date().toISOString(),
               medico_solicitante: medico,
               id_ingreso: ingreso,
-              genero:datosDiv.dataset.genero
+              genero: datosDiv.dataset.genero
             }),
           });
-      
+
           const result = await response.json();
-      
-          if (response.ok)
-             {
+
+          if (response.ok) {
             showModal('✔️ Internación confirmada exitosamente. Redirigiendo...', 'success');
-          
-            setTimeout(() => 
-              {
-              window.location.href = '/'; 
-            }, 10500); 
+            setTimeout(() => {
+              window.location.href = '/admision/dashboard';
+            }, 3000);
           } else {
             showModal(`❌ Error: ${result.error || 'No se pudo registrar la internación.'}`, 'error');
           }
-        } catch (error) 
-        {
+        } catch (error) {
           console.error('Error al confirmar internación:', error);
           showModal('❌ Error inesperado al confirmar la internación.', 'error');
         }
-  
-     //   resultadoDiv.textContent = '✅ Internación confirmada exitosamente.';
       };
-  
-      // Cancelar
+
       document.getElementById('btn-cancelar').onclick = () => {
         document.getElementById('modal-confirmacion').classList.add('hidden');
       };
     });
   }
-  
- 
-   
 
-
-
-
+  function showModal(message, type) {
+    const modal = document.createElement('div');
+    modal.className = `fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50`;
+    modal.innerHTML = `
+      <div class="bg-white p-6 rounded shadow-md w-96">
+        <p class="${type === 'error' ? 'text-red-600' : 'text-green-600'}">${message}</p>
+        <button onclick="this.parentElement.parentElement.remove()" class="mt-4 bg-gray-400 text-white px-4 py-2 rounded">Cerrar</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
 });
-
-
-
-
