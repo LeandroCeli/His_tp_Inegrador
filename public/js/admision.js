@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const dni = document.getElementById('dni').value.trim();
-        console.log('Dni Chequeo:'+dni);
+        
         try {
           const response = await fetch(`/admision/paciente/buscar?dni=${dni}`);
           const data = await response.json();
-          console.log('Encontradp ? :' + data.encontrado);
+         
           if (data.encontrado) {
             if (data.yaInternado) 
             {

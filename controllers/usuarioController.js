@@ -14,7 +14,7 @@ const mostrarFormularioNuevoUsuario = async (req, res) => {
     const tiposUsuario = await TipoUsuario.findAll();
     //configurando a bd el cambo nombre_tipo como unico, buscamos el id q hace referencia al medico.
     const medico = await TipoUsuario.findOne({ where: { nombre_tipo: 'Medico' } });
-    console.log(medico.id);
+    
     const tipoEspecialidad = await Especialidad.findAll();
 
     const success = req.query.success === '1';
@@ -41,10 +41,7 @@ const mostrarFormularioNuevoUsuario = async (req, res) => {
 
 const crearUsuario = async (req, res) => {
   const { dni, nombre, apellido, telefono, email, password, tipo_usuario_id, especialidad, descripcion, matricula } = req.body;
-
-   console.log('******'+ tipo_usuario_id);
-
-  const errores = {};
+ const errores = {};
   let errorGeneral = null;
   let success = null;
 
@@ -111,9 +108,7 @@ const crearUsuario = async (req, res) => {
     });
 
     // Si es médico, asociar especialidad
-    console.log(tipo.nombre_tipo+'---*-*-*-*-'+ especialidad);
-    console.log(nuevoUsuario.id_usuario+'*333*3*3*3*3*3*');
-    if (tipo.nombre_tipo === 'Medico' )
+        if (tipo.nombre_tipo === 'Medico' )
       {
        
         await UsuarioEspecialidad.create({

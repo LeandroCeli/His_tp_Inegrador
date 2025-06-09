@@ -1,12 +1,12 @@
 const requireLogin = (req, res, next) => {
-  console.log('Sesión:', req.session);
+  //console.log('Sesión:', req.session);
 
   if (req.session && req.session.user && req.session.user.nombre) {
-    console.log('Usuario autenticado:', req.session.user.nombre);
+   // console.log('Usuario autenticado:', req.session.user.nombre);
     return next();
   }
 
-  console.log('Usuario no autenticado');
+ // console.log('Usuario no autenticado');
   
   // Manejo adecuado para solicitudes fetch/AJAX
   if (req.xhr || req.headers.accept.indexOf('json') > -1) {

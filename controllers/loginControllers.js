@@ -26,12 +26,12 @@ async function ingreso(req,res)
     {
       case 'admin':
       {
-        console.log('Admin');
+       // console.log('Admin');
         return res.redirect('/admin/dashboard'); 
       }
       case 'admision': 
       {
-        console.log('admision');
+       // console.log('admision');
         return res.redirect('/admision/dashboard');
       }
     //  case 'enfermeria': return res.redirect('/enfermeria/dashboard');

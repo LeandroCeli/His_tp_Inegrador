@@ -128,7 +128,6 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       }
     } catch (error) {
       console.error(error);
-      console.error('Problema'+error);
       res.status(500).json({ error: 'Error del servidor' });
     }
   };
@@ -139,10 +138,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
       const tiposIngreso = await Ingreso.findAll({ attributes: ['id_ingreso', 'nombre'] });
       const areas = await Area.findAll({ attributes: ['id_area', 'nombre_area'] });
       const info = req.session.informacionPaciente || null;
-      console.log('****:'+info);
-      console.log('Tipos de ingreso:', tiposIngreso);
-      console.log('Áreas:', areas);
-      res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
+       res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
     } catch (error) {
      
       console.error('Error al obtener datos iniciales:', error);
