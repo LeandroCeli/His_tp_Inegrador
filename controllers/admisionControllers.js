@@ -1,6 +1,56 @@
 const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Internacion, Emergencia} = require('../models');
 
 
+const ListarPacientes = async (req, res) => 
+  {
+    try {
+      const pacientes = await Paciente.findAll({
+        attributes: ['nombre','apellido','dni'],
+        include: [{
+          model: Internacion,
+          as: 'internaciones',
+          attributes: ['id_cama','fecha_ingreso'],
+          where: {
+            fecha_alta: null
+          },
+          required: false,
+          include: [{
+            model: Cama,
+            as: 'cama',
+            attributes: ['id_habitacion'],
+            include: [{
+              model: Habitacion,
+              as: 'habitacion',
+              attributes: ['numero_habitacion'],
+              include: [{
+                model: Area,
+                as: 'Area',
+                attributes: ['nombre_area']
+              }]
+            }]
+          }]
+        }]
+      });
+     // console.log(JSON.stringify(pacientes, null, 2))
+     res.render('admision/listaPacientes', { pacientes });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({
+        error: 'Error al obtener pacientes',
+        details: error.message
+      });
+    }
+ 
+  }
+ 
+
+
+
+
+
+
+
+
 
 const mostrarMutual = async (req, res) => {
      const id_paciente = req.params.id;
@@ -478,5 +528,6 @@ const mostrarMutual = async (req, res) => {
     actualizarPaciente,
     eliminarPaciente,
     getVistaPaciente,
-    mostrarMutual
+    mostrarMutual,
+    ListarPacientes
   };

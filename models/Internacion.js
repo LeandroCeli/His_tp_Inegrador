@@ -40,11 +40,20 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     });
   
-    // Relaciones:
+    
     Internacion.associate = function(models) {
-      Internacion.belongsTo(models.Paciente, { foreignKey: 'id_paciente' });
-      Internacion.belongsTo(models.Cama, { foreignKey: 'id_cama' });
-      Internacion.belongsTo(models.Ingreso, { foreignKey: 'id_ingreso' });
+      Internacion.belongsTo(models.Paciente, { 
+        foreignKey: 'id_paciente',
+        as: 'paciente'
+      });
+      Internacion.belongsTo(models.Cama, { 
+        foreignKey: 'id_cama',
+        as: 'cama' 
+      });
+      Internacion.belongsTo(models.Ingreso, { 
+        foreignKey: 'id_ingreso',
+        as: 'ingreso'
+      });
     };
   
     return Internacion;

@@ -46,12 +46,25 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    Paciente.associate = models => {
+    Paciente.associate = function(models) {
+      
       Paciente.belongsToMany(models.Mutual, {
         through: models.PacienteMutual,
-        foreignKey: 'id_paciente'
+        foreignKey: 'id_paciente',
+        as: 'mutuales'
       });
-    };
+      
+      
+      Paciente.hasMany(models.Internacion, { 
+        foreignKey: 'id_paciente',
+        as: 'internaciones' 
+      });
+    
+};
+  
+
+
+
    
     return Paciente;
   };

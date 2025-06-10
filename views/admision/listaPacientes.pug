@@ -1,0 +1,36 @@
+extends ../layouts/layout
+
+block content
+  .container
+    h1.text-2xl.font-bold.mb-4 HIS - Lista de Pacientes Registrados
+
+    a(href="/admin/dashboard" class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-200") ← Volver al panel
+    
+    table.table-auto.w-full.border-collapse.border.border-gray-300
+      thead.bg-gray-100
+        tr
+          th.px-4.py-2.border Nombre
+          th.px-4.py-2.border Apellido
+          th.px-4.py-2.border DNI
+          th.px-4.py-2.border Área (si está internado)
+          th.px-4.py-2.border Habitación (si está internado)
+          th.px-4.py-2.border Acciones
+      tbody
+        each paciente in pacientes
+          tr
+            td.px-4.py-2.border #{paciente.nombre}
+            td.px-4.py-2.border #{paciente.apellido}
+            td.px-4.py-2.border #{paciente.dni}
+
+            if paciente.internaciones && paciente.internaciones.length > 0
+              - const internacion = paciente.internaciones[0];
+              - const area = internacion?.cama?.habitacion?.Area?.nombre_area;
+              - const habitacion = internacion?.cama?.habitacion?.numero_habitacion;
+              td.px-4.py-2.border #{area || 'Desconocida'}
+              td.px-4.py-2.border #{habitacion || 'Desconocida'}
+            else
+              td.px-4.py-2.border.text-gray-400 No internado
+              td.px-4.py-2.border.text-gray-400 -
+
+            td.px-4.py-2.border
+              a(href="" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200") ⬅️ Editar
