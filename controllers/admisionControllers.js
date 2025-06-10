@@ -169,7 +169,7 @@ const mostrarMutual = async (req, res) => {
       const tiposIngreso = await Ingreso.findAll({ attributes: ['id_ingreso', 'nombre'] });
       const areas = await Area.findAll({ attributes: ['id_area', 'nombre_area'] });
       const info = req.session.informacionPaciente || null;
-       res.render('admision/Paciente', {tiposIngreso, informacionPaciente: info ,areas});
+       res.render('admision/paciente', {tiposIngreso, informacionPaciente: info ,areas});
     } catch (error) {
      
       console.error('Error al obtener datos iniciales:', error);
