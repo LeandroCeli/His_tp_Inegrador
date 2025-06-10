@@ -11,15 +11,8 @@ router.get('/pacienteRegistrado',requireLogin,admisionControllers.getDatosInicia
 router.get('/pacienteNuevo', requireLogin, admisionControllers.getFormularioNuevoPaciente);
 router.post('/pacienteCarga', requireLogin, admisionControllers.cargarPaciente);
 router.get('/habitacionesDisponibles/:id_area',requireLogin, admisionControllers.HDisponibles);
-router.get('/paciente', requireLogin, (req, res) => {
-    const info = req.session.informacionPaciente || null;
-    res.render('admision/paciente', 
-      {
-      informacionPaciente: info,
-      tiposIngreso:info.tiposIngreso,
-      areas:info.areas
-      });
-  });
+
+router.get('/paciente', requireLogin,admisionControllers.getVistaPaciente );
 
 router.post('/internarPaciente', requireLogin, admisionControllers.registrarInternacion );
 
@@ -30,6 +23,6 @@ router.get('/datos/:id',requireLogin,admisionControllers.getDatosPaciente);
 router.post('/paciente/:id/editar',requireLogin,admisionControllers.actualizarPaciente);
 router.post('/paciente/:id/eliminar',requireLogin,admisionControllers.eliminarPaciente);
 
-//router.get('/pacientes',requireLogin,admisionControllers.mostrarPacientes);
+router.get('/mutual/:id',requireLogin,admisionControllers.mostrarMutual);
 
 module.exports = router;

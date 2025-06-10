@@ -22,7 +22,7 @@ block content
     // Botones de acción
     div(class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8")
       a(href=`/admision/datos/${informacionPaciente.id_paciente}` class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Datos del Paciente
-      a(href="/admision/pacientes/mutual" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Mutual
+      a(href=`/admision/mutual/${informacionPaciente.id_paciente}` class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Mutual
       //a(href="/admision/pacientes/ingresos" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 text-center") Historia Clínica
      
 
@@ -70,7 +70,7 @@ block content
 
     // Botones de acción final
     div(class="flex justify-end gap-4")
-      a(href="/" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
+      a(href="/admision/dashboard" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition duration-200") Cancelar
       button(id="admit-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200" disabled) Confirmar Internación
    
     // Modal de confirmación

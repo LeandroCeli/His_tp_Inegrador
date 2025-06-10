@@ -1,6 +1,34 @@
 const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Internacion, Emergencia} = require('../models');
 
 
+
+const mostrarMutual = async (req, res) => {
+     const id_paciente = req.params.id;
+
+  try {
+    const mutuales = await PacienteMutual.findAll({
+      where: { id_paciente },
+      include: {
+        model: Mutual,
+        attributes: ['nombre_mutual']
+      }
+    });
+
+    const resultado = mutuales.map(pm => ({
+      nombre: pm.Mutual.nombre_mutual,
+      numeroAfiliado: pm.numeroAfiliado
+    }));
+  
+    res.render('admision/mutual', { mutuales: resultado });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener mutuales del paciente');
+  }
+};
+
+
+
+
    const getPrincipal = async (req, res) => 
    {
     try {
@@ -42,21 +70,24 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
         if (!paciente) return res.status(404).send('Paciente no encontrado');
          res.render('admision/datosPaciente', { paciente });
    }
-   const actualizarPaciente = async (req, res) => 
-    {
-        
-     try 
-     {
-      await Paciente.update(req.body, { where: { id_paciente : req.params.id } });
-      console.log('Se actualizo');
+   const actualizarPaciente = async (req, res) => {
+    try {
+      await Paciente.update(req.body, { where: { id_paciente: req.params.id } });
+      console.log('Se actualizó');
+  
       const paciente = await Paciente.findByPk(req.params.id);
-      res.render('admision/datosPaciente', { paciente });
-    } catch (error) 
-    {
+  
+      
+      res.render('admision/datosPaciente', { 
+        paciente, 
+        mensaje: '✅ Datos actualizados correctamente.' 
+      });
+    } catch (error) {
       console.error(error);
       res.status(500).send('Error actualizando paciente');
     }
-    }
+  };
+  
 
 
 
@@ -242,6 +273,33 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
     
       return edad;
     }
+    
+    const getVistaPaciente = async (req, res) => {
+      try {
+        const info = req.session.informacionPaciente;
+    
+        if (!info) {
+          return res.redirect('/admision'); // Redirigir si no hay paciente cargado
+        }
+    
+        const tiposIngreso = await Ingreso.findAll({ attributes: ['id_ingreso', 'nombre'] });
+        const areas = await Area.findAll({ attributes: ['id_area', 'nombre_area'] });
+        
+        res.render('admision/paciente', {
+          informacionPaciente: info,
+          tiposIngreso,
+          areas
+        });
+    
+      } catch (error) {
+        console.error('Error al renderizar la vista de paciente:', error);
+        res.status(500).send('Error interno del servidor');
+      }
+    };
+    
+
+
+
 
     const HDisponibles = async (req, res) => {
       const { id_area } = req.params;
@@ -418,5 +476,7 @@ const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Interna
     getPrincipal,
     getDatosPaciente,
     actualizarPaciente,
-    eliminarPaciente
+    eliminarPaciente,
+    getVistaPaciente,
+    mostrarMutual
   };

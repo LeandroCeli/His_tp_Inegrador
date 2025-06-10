@@ -1,0 +1,24 @@
+extends ../layouts/layout
+
+block content
+  .min-h-screen.bg-gray-100.flex.items-center.justify-center
+    .bg-white.shadow-md.rounded-lg.p-8.max-w-2xl.w-full
+      h2.text-2xl.font-bold.text-blue-700.mb-6.text-center 🏥 Mutual(es) del Paciente
+
+      if mutuales.length
+        table.w-full.table-auto.border-collapse.border.border-gray-300
+          thead.bg-gray-200
+            tr
+              th.px-4.py-2.text-left.border.border-gray-300 Nombre de la Mutual
+              th.px-4.py-2.text-left.border.border-gray-300 Número de Afiliado
+          tbody
+            each m in mutuales
+              tr
+                td.px-4.py-2.border.border-gray-300= m.nombre
+                td.px-4.py-2.border.border-gray-300= m.numeroAfiliado
+      else
+        p.text-center.text-gray-600 El paciente no tiene mutuales asociadas.
+
+      // Botón Volver
+      .mt-6.text-center
+        a(href="/admision/pacienteRegistrado" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200") ⬅️ Volver
