@@ -20,5 +20,6 @@ router.post('/paciente/:id/editar',requireLogin,admisionControllers.actualizarPa
 router.post('/paciente/:id/eliminar',requireLogin,admisionControllers.eliminarPaciente);
 router.get('/mutual/:id',requireLogin,admisionControllers.mostrarMutual);
 router.get('/listaPacientes',requireLogin,admisionControllers.ListarPacientes);
+router.get('/listaInternaciones',requireLogin,admisionControllers.ListarInternaciones);
 
 module.exports = router;

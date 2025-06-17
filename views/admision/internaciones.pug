@@ -1,21 +1,37 @@
 extends ../layouts/layout
 
 block content
-  h2(class="text-2xl font-bold mb-6 text-gray-800") Internaciones activas
+  .container
+    h1.text-2xl.font-bold.mb-4 HIS - Internaciones Activas
 
-  table(class="w-full bg-white shadow rounded")
-    thead
-      tr(class="bg-gray-200 text-gray-700")
-        th(class="py-2 px-4") Paciente
-        th(class="py-2 px-4") Cama
-        th(class="py-2 px-4") Fecha ingreso
-        th(class="py-2 px-4") Motivo
-        th(class="py-2 px-4 text-center") Acciones
-    tbody
-      tr
-        td(class="py-2 px-4") Ana Gómez
-        td(class="py-2 px-4") 101A
-        td(class="py-2 px-4") 2025-04-20
-        td(class="py-2 px-4") Cirugía programada
-        td(class="py-2 px-4 text-center")
-          a(href="#" class="text-blue-600 hover:underline") Ver detalles
+    a(href="/admision/dashboard" class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-200") ← Volver al panel
+
+    if pacientes.length
+      table.table-auto.w-full.border-collapse.border.border-gray-300
+        thead.bg-gray-100
+          tr
+            th.px-4.py-2.border Nombre
+            th.px-4.py-2.border Apellido
+            th.px-4.py-2.border DNI
+            th.px-4.py-2.border Área
+            th.px-4.py-2.border Habitación
+            th.px-4.py-2.border Fecha de Ingreso
+            th.px-4.py-2.border Acciones
+        tbody
+          each paciente in pacientes
+            - const internacion = paciente.internaciones[0]
+            - const area = internacion?.cama?.habitacion?.Area?.nombre_area;
+            - const habitacion = internacion?.cama?.habitacion?.numero_habitacion;
+            - const fechaIngreso = internacion?.fecha_ingreso;
+
+            tr
+              td.px-4.py-2.border #{paciente.nombre}
+              td.px-4.py-2.border #{paciente.apellido}
+              td.px-4.py-2.border #{paciente.dni}
+              td.px-4.py-2.border #{area || 'Desconocida'}
+              td.px-4.py-2.border #{habitacion || 'Desconocida'}
+              td.px-4.py-2.border #{fechaIngreso || 'No registrada'}
+              td.px-4.py-2.border
+                //a(href=`//${paciente.id_paciente}/detalle` class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200") 📋 Ver Detalle
+    else
+      p.text-center.text-gray-600.mt-4 No hay internaciones activas actualmente.

@@ -4,7 +4,7 @@ block content
   .container
     h1.text-2xl.font-bold.mb-4 HIS - Lista de Pacientes Registrados
 
-    a(href="/admin/dashboard" class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-200") ← Volver al panel
+    a(href="/admision/dashboard" class="inline-block mb-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-200") ← Volver al panel
     
     table.table-auto.w-full.border-collapse.border.border-gray-300
       thead.bg-gray-100
@@ -29,8 +29,10 @@ block content
               td.px-4.py-2.border #{area || 'Desconocida'}
               td.px-4.py-2.border #{habitacion || 'Desconocida'}
             else
-              td.px-4.py-2.border.text-gray-400 No internado
+              td.px-4.py-2.border.text-gray-400 Resgistrado - No internado
               td.px-4.py-2.border.text-gray-400 -
 
             td.px-4.py-2.border
-              a(href="" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200") ⬅️ Editar
+              a(href=`/admision/datos/${paciente.id_paciente}?origen=listaPacientes` class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200") ⬅️ Datos del Paciente
+
+             

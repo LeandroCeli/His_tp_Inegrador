@@ -11,7 +11,7 @@ block content
           | #{mensaje}
 
       // Formulario de edición
-      form#formEditarPaciente(method="POST" action=`/admision/paciente/${paciente.id_paciente}/editar`)
+      form#formEditarPaciente(method="POST" action=`/admision/paciente/${paciente.id_paciente}/editar?origen=${origen}`)
         .mb-4
           label.block.text-sm.font-medium(for="nombre") Nombre
           input#nombre(type="text" name="nombre" value=paciente.nombre required class="w-full p-2 border rounded")
@@ -45,11 +45,19 @@ block content
 
         .mb-4
           label.block.text-sm.font-medium(for="grupo_sanguineo") Grupo Sanguíneo
-          input#grupo_sanguineo(type="text" name="grupo_sanguineo" value=paciente.grupo_sanguineo class="w-full p-2 border rounded")
+          select#grupo_sanguineo(name="grupo_sanguineo" class="w-full p-2 border rounded")
+            option(value="A+" selected=paciente.grupo_sanguineo === 'A+') A+
+            option(value="A-" selected=paciente.grupo_sanguineo === 'A-') A-
+            option(value="B+" selected=paciente.grupo_sanguineo === 'B+') B+
+            option(value="B-" selected=paciente.grupo_sanguineo === 'B-') B-
+            option(value="AB+" selected=paciente.grupo_sanguineo === 'AB+') AB+
+            option(value="AB-" selected=paciente.grupo_sanguineo === 'AB-') AB-
+            option(value="O+" selected=paciente.grupo_sanguineo === 'O+') O+
+            option(value="O-" selected=paciente.grupo_sanguineo === 'O-') O-
 
         .mb-4
-          label.block.text-sm.font-medium(for="direccion") Dirección
-          input#direccion(type="text" name="direccion" value=paciente.domicilio class="w-full p-2 border rounded")
+          label.block.text-sm.font-medium(for="domicilio") Domicilio
+          input#domicilio(type="text" name="domicilio" value=paciente.domicilio class="w-full p-2 border rounded")
 
         // Botón Guardar Cambios
         .mt-6.flex.justify-center
@@ -57,15 +65,20 @@ block content
             | 💾 Guardar Cambios
 
       // Botón Eliminar Paciente
-      form(method="POST" action=`/admision/paciente/${paciente.id_paciente}/eliminar?_method=DELETE` onsubmit="return confirm('¿Estás seguro de eliminar al paciente?');" class="mt-4 flex justify-center")
+      form(method="POST" action=`/admision/paciente/${paciente.id_paciente}/eliminar?_method=DELETE&origen=${origen}` onsubmit="return confirm('¿Estás seguro de eliminar al paciente?');" class="mt-4 flex justify-center")
         button(type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-200")
           | 🗑️ Eliminar Paciente
 
-      // Botón Volver
+      // Botón Volver según el origen
       .mt-6.text-center
-        a(href="/admision/pacienteRegistrado" class="text-blue-600 hover:underline text-sm") ⬅️ Volver
+        if origen === 'listaPacientes'
+          a(href="/admision/listaPacientes" class="text-blue-600 hover:underline") ⬅️ Volver a la Lista
+        else if origen === 'paciente'
+          a(href="/admision/paciente" class="text-blue-600 hover:underline") ⬅️ Volver a Paciente
+        else
+          a(href="/admision/dashboard" class="text-blue-600 hover:underline") ⬅️ Volver al Panel
 
-  // Script para mensaje temporal y redirección si es eliminación
+  // Script para mensaje temporal
   script.
     document.addEventListener('DOMContentLoaded', function () {
       const msg = document.querySelector('.mensaje-exito');
@@ -73,7 +86,6 @@ block content
         setTimeout(() => {
           msg.style.transition = 'opacity 0.5s ease';
           msg.style.opacity = '0';
-        }, 2500); 
-        
+        }, 2500);
       }
     });

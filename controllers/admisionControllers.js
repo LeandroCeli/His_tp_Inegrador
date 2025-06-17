@@ -1,11 +1,58 @@
 const { Paciente , Mutual, Ingreso, PacienteMutual, Area,Habitacion,Cama,Internacion, Emergencia} = require('../models');
 
+const ListarInternaciones = async (req, res) => 
+  {
+    try 
+    {
+      const pacientes = await Paciente.findAll({
+        include: [
+          {
+            model: Internacion,
+            as: 'internaciones',
+            where: {
+              fecha_alta: null // indicamos internaiones activas 
+            },
+            include: [
+              {
+                model: Cama,
+                as: 'cama',
+                include: [
+                  {
+                    model: Habitacion,
+                    as: 'habitacion',
+                    include: [
+                      {
+                        model: Area,
+                        as: 'Area'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+      
+      res.render('admision/internaciones', { pacientes });
+      
+        
+    } catch (error) 
+    {
+      console.error('Error:', error);
+      res.status(500).json({
+        error: 'Error al obtener internaciones',
+        details: error.message
+      });
+    }
+
+  }
 
 const ListarPacientes = async (req, res) => 
   {
     try {
       const pacientes = await Paciente.findAll({
-        attributes: ['nombre','apellido','dni'],
+        attributes: ['id_paciente','nombre','apellido','dni'],
         include: [{
           model: Internacion,
           as: 'internaciones',
@@ -115,16 +162,18 @@ const mostrarMutual = async (req, res) => {
 
    const getDatosPaciente = async (req, res) => 
    {
-      
-    const paciente = await Paciente.findByPk(req.params.id);
+    const idPaciente = req.params.id;
+    const origen = req.query.origen;
+    const paciente = await Paciente.findByPk(idPaciente);
         if (!paciente) return res.status(404).send('Paciente no encontrado');
-         res.render('admision/datosPaciente', { paciente });
+         res.render('admision/datosPaciente', { paciente, origen: origen || 'default' });
    }
    const actualizarPaciente = async (req, res) => {
     try {
+     
+       const test =  req.params.id;
+     
       await Paciente.update(req.body, { where: { id_paciente: req.params.id } });
-      console.log('Se actualizó');
-  
       const paciente = await Paciente.findByPk(req.params.id);
   
       
@@ -389,7 +438,7 @@ const mostrarMutual = async (req, res) => {
     
             if (camasOcupadas.length > 0) {
               const generoOcupante = camasOcupadas[0].genero_ocupante;
-              if (generoOcupante && generoOcupante !== genero) {
+            if (generoOcupante && generoOcupante !== genero) {
                 continue;
               }
             }
@@ -418,7 +467,7 @@ const mostrarMutual = async (req, res) => {
     const registrarInternacion  = async (req, res) => 
     {
       const { id_paciente, id_cama, fecha_ingreso, medico_solicitante, id_ingreso,genero } = req.body;
-      console.log('*******id_paciente:'+id_paciente) ;
+     
 
       try {
            await Internacion.create({
@@ -427,7 +476,8 @@ const mostrarMutual = async (req, res) => {
           fecha_ingreso,
           fecha_alta: null, // aún no hay alta
           medico_solicitante,
-          id_ingreso
+          id_ingreso,
+          descripcion:'Detallle de interacion'
         });
                        
             const cama = await Cama.findByPk(id_cama);
@@ -529,5 +579,6 @@ const mostrarMutual = async (req, res) => {
     eliminarPaciente,
     getVistaPaciente,
     mostrarMutual,
-    ListarPacientes
+    ListarPacientes,
+    ListarInternaciones
   };
